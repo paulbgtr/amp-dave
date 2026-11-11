@@ -1,69 +1,62 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ButtonLink, CheckList, Eyebrow } from "@/components/ui";
+import { ArrowIcon, CheckIcon, PeopleIcon, PinIcon } from "@/components/icons";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="mx-auto max-w-6xl px-4 pt-10 sm:px-6 md:pt-16">
+      <section className="relative overflow-hidden rounded-3xl border border-line/60 bg-surface px-6 py-12 shadow-[0_24px_60px_-30px_rgba(27,34,32,0.25)] sm:px-10 md:px-14 md:py-20">
+        {/* organic shape, decorative */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-mint sm:h-96 sm:w-96 md:-right-16 md:-top-32 md:h-[30rem] md:w-[30rem]"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+        <div className="relative max-w-2xl">
+          <Eyebrow>TalTech Virumaa College · Ida-Virumaa</Eyebrow>
+          <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-6xl">
+            Human–Robot Interaction Lab
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-5 text-lg leading-relaxed text-ink-muted sm:text-xl">
+            Technology that reads what people can&apos;t say already exists in Ida-Virumaa.
+            We study how people and machines work together — and how gaze, brain and body
+            signals could help us understand the people we care for.
           </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <ButtonLink href="/lab">About the lab</ButtonLink>
+            <ButtonLink href="/contact" variant="outline">Contact us</ButtonLink>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="relative mt-10 max-w-xl">
+          <CheckList
+            items={[
+              { icon: <PinIcon />, text: "Based in Kohtla-Järve, open to partners across the region" },
+              { icon: <PeopleIcon />, text: "Researchers, carers and organisations welcome" },
+              { icon: <CheckIcon />, text: "Every study is consent-first and voluntary" },
+            ]}
+          />
         </div>
-      </main>
+      </section>
+
+      <nav aria-label="Explore" className="mt-6 grid gap-4 sm:grid-cols-3">
+        {[
+          { href: "/equipment", title: "Equipment", text: "Eye tracking, EEG and skin response sensors." },
+          { href: "/research", title: "Research example", text: "Understanding people who can't speak." },
+          { href: "/contact", title: "Collaborate", text: "Tell us you're interested in a pilot." },
+        ].map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="group flex items-start justify-between gap-4 rounded-2xl border border-line/60 bg-surface p-5 transition-colors hover:border-primary/40 hover:bg-mist"
+          >
+            <span>
+              <span className="block font-display text-lg font-semibold">{item.title}</span>
+              <span className="mt-1 block text-ink-muted">{item.text}</span>
+            </span>
+            <ArrowIcon className="mt-1 shrink-0 text-primary transition-transform group-hover:translate-x-1" />
+          </Link>
+        ))}
+      </nav>
     </div>
   );
 }
