@@ -57,7 +57,7 @@ export function PageIntro({
           <Eyebrow>{eyebrow}</Eyebrow>
         </StaggerItem>
         <StaggerItem>
-          <h1 className="mt-5 max-w-3xl font-display text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-balance sm:text-6xl">
+          <h1 className="mt-5 max-w-3xl font-display text-4xl font-medium leading-[1.05] tracking-[-0.02em] text-balance sm:text-6xl">
             {title}
           </h1>
         </StaggerItem>

@@ -26,9 +26,9 @@
   --color-line: var(--line);
   --color-signal: var(--signal);
   --color-go: var(--go);
-  --font-sans: var(--font-geist);
-  --font-display: var(--font-geist);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans-face);
+  --font-display: var(--font-sans-face);
+  --font-mono: var(--font-mono-face);
   --font-serif: var(--font-serif-face);
 }
 
@@ -41,8 +41,8 @@ html {
 body {
   background: var(--canvas);
   color: var(--ink);
-  font-family: var(--font-geist), system-ui, sans-serif;
-  font-feature-settings: "ss01", "tnum";
+  font-family: var(--font-sans-face), system-ui, sans-serif;
+  font-feature-settings: "tnum";
 }
 
 :focus-visible {
@@ -57,7 +57,7 @@ body {
 
 /* Small uppercase mono label: captions, spec labels, status lines */
 @utility label-mono {
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono-face), monospace;
   font-size: 0.8125rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -73,7 +73,7 @@ main {
   content: counter(section, decimal-leading-zero);
   display: block;
   margin-bottom: 0.75rem;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono-face), monospace;
   font-size: 0.8125rem;
   font-weight: 400;
   letter-spacing: 0.08em;

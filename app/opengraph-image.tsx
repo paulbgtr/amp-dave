@@ -1,4 +1,6 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
 // Share card shown when the site is posted on Facebook, Messenger, Slack, etc.
 export const alt =
@@ -15,7 +17,16 @@ const C = {
   signal: "#d9481a",
 };
 
-export default function OpengraphImage() {
+// Same fonts as the site, read at build time (the image is generated statically).
+const font = (pkg: string, file: string) => readFile(join(process.cwd(), "node_modules/@fontsource", pkg, "files", file));
+
+export default async function OpengraphImage() {
+  const [sans400, sans500, mono400] = await Promise.all([
+    font("instrument-sans", "instrument-sans-latin-400-normal.woff"),
+    font("instrument-sans", "instrument-sans-latin-500-normal.woff"),
+    font("dm-mono", "dm-mono-latin-400-normal.woff"),
+  ]);
+
   return new ImageResponse(
     (
       <div
@@ -27,18 +38,21 @@ export default function OpengraphImage() {
           justifyContent: "space-between",
           background: C.canvas,
           color: C.ink,
+          fontFamily: "Instrument Sans",
           padding: "64px 72px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 22, letterSpacing: 3, color: C.muted }}>
+        <div
+          style={{ display: "flex", alignItems: "center", gap: 14, fontFamily: "DM Mono", fontSize: 22, letterSpacing: 2, color: C.muted }}
+        >
           <div style={{ width: 12, height: 12, borderRadius: 999, background: C.signal }} />
           TALTECH VIRUMAA COLLEGE · IDA-VIRUMAA
         </div>
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", flexDirection: "column", maxWidth: 640 }}>
-            <div style={{ fontSize: 84, lineHeight: 1, letterSpacing: -3 }}>Human–Robot</div>
-            <div style={{ fontSize: 84, lineHeight: 1, letterSpacing: -3 }}>Interaction Lab</div>
+            <div style={{ fontSize: 88, fontWeight: 500, lineHeight: 1, letterSpacing: -3 }}>Human–Robot</div>
+            <div style={{ fontSize: 88, fontWeight: 500, lineHeight: 1, letterSpacing: -3 }}>Interaction Lab</div>
             <div style={{ marginTop: 28, fontSize: 32, lineHeight: 1.35, color: C.muted }}>
               Understanding people who communicate beyond words.
             </div>
@@ -79,6 +93,13 @@ export default function OpengraphImage() {
         </div>
       </div>
     ),
-    size,
+    {
+      ...size,
+      fonts: [
+        { name: "Instrument Sans", data: sans400, weight: 400, style: "normal" },
+        { name: "Instrument Sans", data: sans500, weight: 500, style: "normal" },
+        { name: "DM Mono", data: mono400, weight: 400, style: "normal" },
+      ],
+    },
   );
 }

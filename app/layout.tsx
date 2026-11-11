@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { DM_Mono, Instrument_Sans, Instrument_Serif } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { MotionProvider } from "@/components/motion";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const geist = Geist({ variable: "--font-geist", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const sans = Instrument_Sans({ variable: "--font-sans-face", subsets: ["latin"] });
+const mono = DM_Mono({ variable: "--font-mono-face", subsets: ["latin"], weight: ["400", "500"] });
 const serif = Instrument_Serif({ variable: "--font-serif-face", subsets: ["latin"], weight: "400", style: ["normal", "italic"] });
 
 export const metadata: Metadata = {
@@ -24,7 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geist.variable} ${geistMono.variable} ${serif.variable} h-full antialiased`}
+      className={`${sans.variable} ${mono.variable} ${serif.variable} h-full antialiased`}
     >
       <head>
         {/* If JavaScript is off or fails, show everything that would otherwise animate in. */}

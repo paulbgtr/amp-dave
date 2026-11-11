@@ -42,7 +42,7 @@ export default function Home() {
             <Eyebrow>TalTech Virumaa College</Eyebrow>
           </StaggerItem>
           <StaggerItem>
-            <h1 className="mt-6 font-display text-5xl font-medium leading-[1] tracking-[-0.04em] text-balance sm:text-7xl">
+            <h1 className="mt-6 font-display text-5xl font-medium leading-[1] tracking-[-0.025em] text-balance sm:text-7xl">
               Human–Robot Interaction Lab
             </h1>
           </StaggerItem>
