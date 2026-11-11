@@ -100,26 +100,3 @@ export function StaggerItem({
     </Comp>
   );
 }
-
-/**
- * Speaker-grille disc (after Braun's radios): the dot field opens up from the
- * centre, with a single orange indicator light.
- */
-export function Grille({ className = "" }: { className?: string }) {
-  return (
-    <div aria-hidden="true" className={`relative aspect-square ${className}`}>
-      <motion.div
-        className="grille absolute inset-0 rounded-full ring-1 ring-line"
-        initial={{ clipPath: "circle(0% at 50% 50%)", rotate: -12 }}
-        animate={{ clipPath: "circle(50% at 50% 50%)", rotate: 0 }}
-        transition={{ duration: 1.4, ease: EASE, delay: 0.2 }}
-      />
-      <motion.span
-        className="absolute right-[12%] bottom-[12%] h-4 w-4 rounded-full bg-signal ring-4 ring-canvas"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: "spring", stiffness: 500, damping: 22, delay: 1.3 }}
-      />
-    </div>
-  );
-}

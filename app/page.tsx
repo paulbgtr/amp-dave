@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ButtonLink, Eyebrow } from "@/components/ui";
 import { ArrowIcon, BrainIcon, EyeIcon, HandIcon, PeopleIcon, RobotIcon, ShieldIcon } from "@/components/icons";
-import { Grille, Reveal, Stagger, StaggerItem } from "@/components/motion";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion";
+import { BeyondWords } from "@/components/beyond-words";
 
 const specs = [
   { label: "Location", value: "Kohtla-Järve, Ida-Virumaa" },
@@ -58,8 +59,8 @@ export default function Home() {
           </StaggerItem>
         </Stagger>
 
-        <div className="mx-auto w-56 sm:w-72 md:col-span-5 md:w-full md:max-w-sm">
-          <Grille />
+        <div className="mx-auto w-full max-w-sm md:col-span-5">
+          <BeyondWords />
         </div>
       </section>
 

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { EASE } from "@/components/motion";
+import { BeyondWordsMark } from "@/components/beyond-words";
 
 const NAV = [
   { href: "/lab", label: "The lab" },
@@ -28,11 +29,7 @@ export function SiteHeader() {
           className="flex items-center gap-2.5 font-display font-medium tracking-tight"
           onClick={() => setOpen(false)}
         >
-          <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true" className="shrink-0">
-            <circle cx="12" cy="12" r="11.5" className="fill-panel stroke-line" strokeWidth="1" />
-            <g className="fill-graphite"><circle cx="5.6" cy="5.6" r="0.95" /><circle cx="5.6" cy="8.8" r="0.95" /><circle cx="5.6" cy="12.0" r="0.95" /><circle cx="5.6" cy="15.2" r="0.95" /><circle cx="5.6" cy="18.4" r="0.95" /><circle cx="8.8" cy="5.6" r="0.95" /><circle cx="8.8" cy="8.8" r="0.95" /><circle cx="8.8" cy="12.0" r="0.95" /><circle cx="8.8" cy="15.2" r="0.95" /><circle cx="8.8" cy="18.4" r="0.95" /><circle cx="12.0" cy="5.6" r="0.95" /><circle cx="12.0" cy="8.8" r="0.95" /><circle cx="12.0" cy="12.0" r="0.95" /><circle cx="12.0" cy="15.2" r="0.95" /><circle cx="12.0" cy="18.4" r="0.95" /><circle cx="15.2" cy="5.6" r="0.95" /><circle cx="15.2" cy="8.8" r="0.95" /><circle cx="15.2" cy="12.0" r="0.95" /><circle cx="15.2" cy="15.2" r="0.95" /><circle cx="15.2" cy="18.4" r="0.95" /><circle cx="18.4" cy="5.6" r="0.95" /><circle cx="18.4" cy="8.8" r="0.95" /><circle cx="18.4" cy="12.0" r="0.95" /><circle cx="18.4" cy="15.2" r="0.95" /><circle cx="18.4" cy="18.4" r="0.95" /></g>
-            <circle cx="19.2" cy="19.2" r="2.6" className="fill-signal stroke-canvas" strokeWidth="1.2" />
-          </svg>
+          <BeyondWordsMark />
           <span className="text-lg">HRI Lab</span>
           <span className="hidden text-sm font-normal text-ink-muted sm:inline">
             TalTech Virumaa College
