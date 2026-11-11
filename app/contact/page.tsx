@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Card, CheckList, PageIntro } from "@/components/ui";
 import { InterestForm } from "@/components/interest-form";
 import { CheckIcon, LockIcon, MailIcon, PinIcon } from "@/components/icons";
-import { CONTACT } from "@/lib/contact";
+import { CONTACT } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Contact" };
 
@@ -31,16 +31,23 @@ export default function ContactPage() {
           <Card>
             <h2 className="font-display text-xl font-medium">Reach the lab</h2>
             <ul className="mt-4 space-y-4">
-              <li className="flex gap-3">
-                <MailIcon className="mt-0.5 shrink-0 text-ink" />
-                <span>
-                  <a href={`mailto:${CONTACT.email}`} className="font-medium text-ink underline underline-offset-4">
-                    {CONTACT.email}
-                  </a>
-                  <br />
-                  <a href={`tel:${CONTACT.phone.replace(/\s/g, "")}`} className="text-ink-muted">{CONTACT.phone}</a>
-                </span>
-              </li>
+              {(CONTACT.email || CONTACT.phone) && (
+                <li className="flex gap-3">
+                  <MailIcon className="mt-0.5 shrink-0 text-ink" />
+                  <span>
+                    {CONTACT.email && (
+                      <a href={`mailto:${CONTACT.email}`} className="block font-medium text-ink underline underline-offset-4">
+                        {CONTACT.email}
+                      </a>
+                    )}
+                    {CONTACT.phone && (
+                      <a href={`tel:${CONTACT.phone.replace(/\s/g, "")}`} className="block text-ink-muted">
+                        {CONTACT.phone}
+                      </a>
+                    )}
+                  </span>
+                </li>
+              )}
               <li className="flex gap-3">
                 <PinIcon className="mt-0.5 shrink-0 text-ink" />
                 <address className="not-italic">

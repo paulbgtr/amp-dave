@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HRI Lab — concept site
 
-## Getting Started
+Concept website for the Human–Robot Interaction Lab at TalTech Virumaa College, by team **AMP Dave**.
+It introduces the lab, its biometric equipment, and a research idea: using those sensors to help carers
+understand people who can't speak. Visitors can express interest through a form.
 
-First, run the development server:
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+bun run dev      # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Production build (what gets deployed):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+bun run build && bun run start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Where things live
 
-## Learn More
+| What | File |
+| --- | --- |
+| Nav links, contact details, form endpoint, site URL | `lib/site.ts` |
+| Colours, fonts, shared CSS utilities | `app/globals.css` |
+| Pages | `app/page.tsx`, `app/lab`, `app/equipment`, `app/research`, `app/contact` |
+| Shared building blocks (sections, cards, callouts, buttons) | `components/ui.tsx` |
+| Animations | `components/motion.tsx` |
+| Speech-bubble illustration and logo | `components/beyond-words.tsx` |
+| Equipment line drawings | `components/device-drawings.tsx` |
+| Interest form (posts to Formspree) | `components/interest-form.tsx` |
+| Favicon, home-screen icon, share image | `app/icon.svg`, `app/apple-icon.tsx`, `app/opengraph-image.tsx` |
 
-To learn more about Next.js, take a look at the following resources:
+Contact email and phone are `null` in `lib/site.ts` and stay hidden on the site until real ones are added.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Form submissions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The interest form sends to Formspree. Responses arrive in the team inbox and the Formspree dashboard.
+The free plan keeps 30 days of history — export a CSV before it matters.
 
-## Deploy on Vercel
+## Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Every page is static, so any static host works. On Vercel: import the GitHub repo, keep the defaults, deploy.
+The share image picks up the Vercel address automatically; for a custom domain set `NEXT_PUBLIC_SITE_URL`.

@@ -69,7 +69,7 @@ export default function Home() {
         <dl className="grid border-y border-line sm:grid-cols-3 sm:divide-x sm:divide-line">
           {specs.map((s) => (
             <div key={s.label} className="border-b border-line py-5 last:border-b-0 sm:border-b-0 sm:px-6 sm:first:pl-0">
-              <dt className="font-mono text-[13px] uppercase tracking-[0.1em] text-ink-muted">{s.label}</dt>
+              <dt className="label-mono">{s.label}</dt>
               <dd className="mt-1.5">{s.value}</dd>
             </div>
           ))}

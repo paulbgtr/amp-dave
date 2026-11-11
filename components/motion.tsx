@@ -6,6 +6,9 @@ import type { ReactNode } from "react";
 // Calm, unhurried easing — nothing bouncy.
 export const EASE = [0.22, 1, 0.36, 1] as const;
 
+// Reveal once, a little before the element is fully on screen.
+const VIEWPORT = { once: true, margin: "0px 0px -10% 0px" } as const;
+
 /** Honors the OS "reduce motion" setting: transforms are dropped, fades remain. */
 export function MotionProvider({ children }: { children: ReactNode }) {
   return (
@@ -39,7 +42,7 @@ export function Reveal({
       className={className}
       initial="hidden"
       whileInView="show"
-      viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+      viewport={VIEWPORT}
       variants={fadeUp}
       custom={delay}
     >
@@ -70,7 +73,7 @@ export function Stagger({
   const Comp = motion[as];
   const trigger = onMount
     ? { animate: "show" }
-    : { whileInView: "show", viewport: { once: true, margin: "0px 0px -10% 0px" } };
+    : { whileInView: "show", viewport: VIEWPORT };
   return (
     <Comp
       className={className}

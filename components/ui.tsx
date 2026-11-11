@@ -8,10 +8,11 @@ export function Dot({ tone = "signal", className = "" }: { tone?: "signal" | "go
   return <span aria-hidden="true" className={`inline-block h-2 w-2 shrink-0 rounded-full ${color} ${className}`} />;
 }
 
-export function Eyebrow({ children }: { children: ReactNode }) {
+/** Mono label with an indicator dot: page eyebrows, callout labels, status lines. */
+export function Eyebrow({ children, tone = "signal" }: { children: ReactNode; tone?: "signal" | "go" | "ink" }) {
   return (
-    <p className="flex items-center gap-2.5 font-mono text-[13px] uppercase tracking-[0.12em] text-ink-muted">
-      <Dot />
+    <p className="label-mono flex items-center gap-2.5">
+      <Dot tone={tone} />
       {children}
     </p>
   );
@@ -75,14 +76,11 @@ export function Section({
   lead,
   children,
   id,
-  aside,
 }: {
   title: string;
   lead?: ReactNode;
   children: ReactNode;
   id?: string;
-  /** Extra content under the title column, e.g. an illustration. */
-  aside?: ReactNode;
 }) {
   return (
     <section id={id} className="mx-auto max-w-6xl scroll-mt-24 px-4 sm:px-6">
@@ -90,7 +88,6 @@ export function Section({
         <Reveal className="md:col-span-4">
           <h2 className="section-title font-display text-2xl font-medium tracking-[-0.02em]">{title}</h2>
           {lead && <p className="mt-3 max-w-xs text-ink-muted leading-relaxed">{lead}</p>}
-          {aside && <div className="mt-6 max-w-sm">{aside}</div>}
         </Reveal>
         <Reveal className="md:col-span-8" delay={0.1}>
           {children}
@@ -117,10 +114,7 @@ export function Callout({
   const dot = { positive: "go", caution: "signal", neutral: "ink" } as const;
   return (
     <div className="h-full rounded-md border border-line bg-surface px-6 py-5">
-      <p className="flex items-center gap-2.5 font-mono text-[13px] uppercase tracking-[0.1em] text-ink-muted">
-        <Dot tone={dot[tone]} />
-        {label}
-      </p>
+      <Eyebrow tone={dot[tone]}>{label}</Eyebrow>
       <div className="mt-2 leading-relaxed">{children}</div>
     </div>
   );

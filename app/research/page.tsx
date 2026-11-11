@@ -37,7 +37,7 @@ export default function ResearchPage() {
               A client throws away a tablet in the middle of a cartoon. Does he want a
               different one, or is he tired, or hungry?
             </blockquote>
-            <figcaption className="mt-3 font-mono text-[13px] uppercase tracking-[0.08em] text-ink-muted">— Example from a care worker we interviewed</figcaption>
+            <figcaption className="mt-3 label-mono">— Example from a care worker we interviewed</figcaption>
           </figure>
           <p className="text-ink-muted">
             The people they care for can&apos;t tell us, so they go unheard. Carers carry that

@@ -41,7 +41,7 @@ function Frame({ fig, label, children }: { fig: string; label: string; children:
       >
         {children}
       </motion.svg>
-      <figcaption className="flex justify-between border-t border-line px-4 py-2.5 font-mono text-[12px] uppercase tracking-[0.1em] text-ink-muted">
+      <figcaption className="flex justify-between border-t border-line px-4 py-2.5 label-mono text-[12px]!">
         <span>Fig. {fig}</span>
         <span>{label.split(":")[0]}</span>
       </figcaption>

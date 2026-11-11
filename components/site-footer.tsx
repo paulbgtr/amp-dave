@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NAV } from "@/lib/site";
 
 export function SiteFooter() {
   return (
@@ -10,10 +11,13 @@ export function SiteFooter() {
         </div>
         <nav aria-label="Footer">
           <ul className="grid grid-cols-2 gap-2">
-            <li><Link className="hover:text-ink underline-offset-4 hover:underline" href="/lab">The lab</Link></li>
-            <li><Link className="hover:text-ink underline-offset-4 hover:underline" href="/equipment">Equipment</Link></li>
-            <li><Link className="hover:text-ink underline-offset-4 hover:underline" href="/research">Research example</Link></li>
-            <li><Link className="hover:text-ink underline-offset-4 hover:underline" href="/contact">Contact</Link></li>
+            {NAV.map((item) => (
+              <li key={item.href}>
+                <Link className="underline-offset-4 hover:text-ink hover:underline" href={item.href}>
+                  {item.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
         <p className="md:text-right">

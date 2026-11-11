@@ -84,11 +84,11 @@ export default function EquipmentPage() {
 
             <dl className="flex flex-col gap-6 p-6 sm:p-7">
               <div>
-                <dt className="font-mono text-[13px] uppercase tracking-[0.1em] text-ink-muted">How it works</dt>
+                <dt className="label-mono">How it works</dt>
                 <dd className="mt-2 leading-relaxed">{d.how}</dd>
               </div>
               <div>
-                <dt className="font-mono text-[13px] uppercase tracking-[0.1em] text-ink-muted">What it can tell us</dt>
+                <dt className="label-mono">What it can tell us</dt>
                 <dd className="mt-2">
                   <ul className="space-y-1.5">
                     {d.tells.map((t) => (

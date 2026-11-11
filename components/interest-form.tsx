@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState, type SubmitEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { CONTACT, FORMSPREE_ENDPOINT } from "@/lib/contact";
+import { CONTACT, FORMSPREE_ENDPOINT } from "@/lib/site";
 import { EASE } from "@/components/motion";
-import { Dot } from "@/components/ui";
+import { Dot, Eyebrow } from "@/components/ui";
 
 const ROLES = ["Parent or guardian", "Carer or therapist", "Researcher", "Organisation", "Other"];
 const INTERESTS = ["Taking part in a pilot", "Collaborating on the research", "Just keep me updated"];
@@ -75,10 +75,7 @@ export function InterestForm() {
           transition={{ duration: 0.5, ease: EASE }}
           className="py-6"
         >
-          <p className="flex items-center gap-2.5 font-mono text-[13px] uppercase tracking-[0.1em] text-ink-muted">
-            <Dot tone="go" />
-            Received
-          </p>
+          <Eyebrow tone="go">Received</Eyebrow>
           <h3 ref={thanksRef} tabIndex={-1} className="mt-4 font-serif text-3xl italic leading-tight outline-none">
             Thank you{name ? `, ${name}` : ""}.
           </h3>
@@ -171,8 +168,14 @@ export function InterestForm() {
               <p className="flex items-start gap-3 rounded-md border border-line bg-surface px-4 py-3 text-[15px]">
                 <Dot tone="signal" className="mt-[0.45em]" />
                 <span>
-                  Something went wrong and your note wasn&apos;t sent. Please try again, or write to{" "}
-                  <a href={`mailto:${CONTACT.email}`} className="underline underline-offset-4">{CONTACT.email}</a>.
+                  Something went wrong and your note wasn&apos;t sent. Please try again in a moment
+                  {CONTACT.email ? (
+                    <>
+                      , or write to{" "}
+                      <a href={`mailto:${CONTACT.email}`} className="underline underline-offset-4">{CONTACT.email}</a>
+                    </>
+                  ) : null}
+                  .
                 </span>
               </p>
             )}

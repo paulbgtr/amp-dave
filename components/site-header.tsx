@@ -6,20 +6,11 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { EASE } from "@/components/motion";
 import { BeyondWordsMark } from "@/components/beyond-words";
-
-const NAV = [
-  { href: "/lab", label: "The lab" },
-  { href: "/equipment", label: "Equipment" },
-  { href: "/research", label: "Research example" },
-  { href: "/contact", label: "Contact" },
-];
+import { NAV } from "@/lib/site";
 
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-
-  const linkClass = (active: boolean) =>
-    active ? "bg-panel text-ink" : "text-ink-muted hover:text-ink";
 
   return (
     <header className="sticky top-0 z-40 border-b border-line/70 bg-canvas/90 backdrop-blur">
@@ -84,7 +75,7 @@ export function SiteHeader() {
       </div>
 
       <AnimatePresence initial={false}>
-      {open && (
+        {open && (
         <motion.nav
           id="mobile-nav"
           aria-label="Main"
@@ -103,7 +94,7 @@ export function SiteHeader() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     onClick={() => setOpen(false)}
-                    className={`block rounded-md px-3 py-3 font-medium ${linkClass(active)}`}
+                    className={`block rounded-md px-3 py-3 font-medium ${active ? "bg-panel text-ink" : "text-ink-muted hover:text-ink"}`}
                   >
                     {item.label}
                   </Link>

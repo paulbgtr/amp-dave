@@ -55,6 +55,15 @@ body {
   background: var(--panel);
 }
 
+/* Small uppercase mono label: captions, spec labels, status lines */
+@utility label-mono {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+}
+
 /* Auto-numbered section titles: 01, 02, 03… */
 main {
   counter-reset: section;
