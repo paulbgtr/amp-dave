@@ -1,43 +1,35 @@
 @import "tailwindcss";
 
-/* Calm & Inclusive — Swiss structure, organic warmth, accessibility-first */
+/*
+ * Braun-inspired: warm plastic, brushed aluminium, black type,
+ * and one orange signal used like a power indicator — sparingly.
+ */
 :root {
-  --canvas: #f3eee6;
-  --surface: #faf7f1;
-  --ink: #1b2220;
-  --ink-muted: #4a5451;
-  --line: #ddd6ca;
-  --primary: #0b6b53;
-  --primary-strong: #08553f;
-  --primary-ink: #ffffff;
-  --mint: #dcebe3;
-  --mist: #eaf2ee;
-  --sage: #dde7d6;
-  --sage-ink: #2f5130;
-  --blush: #f5d8cf;
-  --blush-ink: #a3301f;
-  --signal: #b9402c;
+  --canvas: #f2ede4; /* warm cream */
+  --surface: #faf7f1; /* paper */
+  --panel: #e8e0d2; /* linen / light elm */
+  --ink: #221d18; /* espresso, not pure black */
+  --graphite: #4a4038;
+  --ink-muted: #625950;
+  --line: #dcd3c4;
+  --signal: #d9481a; /* non-text use only: dots, focus, indicators */
+  --go: #66803a; /* olive */
 }
 
 @theme inline {
   --color-canvas: var(--canvas);
   --color-surface: var(--surface);
+  --color-panel: var(--panel);
   --color-ink: var(--ink);
+  --color-graphite: var(--graphite);
   --color-ink-muted: var(--ink-muted);
   --color-line: var(--line);
-  --color-primary: var(--primary);
-  --color-primary-strong: var(--primary-strong);
-  --color-primary-ink: var(--primary-ink);
-  --color-mint: var(--mint);
-  --color-mist: var(--mist);
-  --color-sage: var(--sage);
-  --color-sage-ink: var(--sage-ink);
-  --color-blush: var(--blush);
-  --color-blush-ink: var(--blush-ink);
   --color-signal: var(--signal);
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-grotesk);
-  --font-mono: var(--font-mono-face);
+  --color-go: var(--go);
+  --font-sans: var(--font-geist);
+  --font-display: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-serif-face);
 }
 
 html {
@@ -49,17 +41,42 @@ html {
 body {
   background: var(--canvas);
   color: var(--ink);
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-feature-settings: "ss01", "tnum";
 }
 
 :focus-visible {
-  outline: 3px solid var(--primary);
+  outline: 2px solid var(--signal);
   outline-offset: 3px;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 ::selection {
-  background: var(--mint);
+  background: var(--panel);
+}
+
+/* Auto-numbered section titles: 01, 02, 03… */
+main {
+  counter-reset: section;
+}
+.section-title::before {
+  counter-increment: section;
+  content: counter(section, decimal-leading-zero);
+  display: block;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+}
+
+/* Speaker-grille dot field */
+.grille {
+  background-color: var(--panel);
+  background-image: radial-gradient(circle, var(--graphite) 1.6px, transparent 2px);
+  background-size: 15px 15px;
+  background-position: center;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -73,3 +90,4 @@ body {
     animation-duration: 0.01ms !important;
   }
 }
+

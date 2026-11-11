@@ -2,10 +2,10 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 border-t border-line/70">
+    <footer className="mt-24 border-t border-line">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 text-sm text-ink-muted sm:px-6 md:grid-cols-3">
         <div>
-          <p className="font-display text-base font-semibold text-ink">Human–Robot Interaction Lab</p>
+          <p className="font-display text-base font-medium text-ink">Human–Robot Interaction Lab</p>
           <p className="mt-1">TalTech Virumaa College, Kohtla-Järve, Ida-Virumaa</p>
         </div>
         <nav aria-label="Footer">

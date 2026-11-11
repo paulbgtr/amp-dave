@@ -1,17 +1,18 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, type SubmitEvent } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { CONTACT } from "@/lib/contact";
 
 const ROLES = ["Parent or guardian", "Carer or therapist", "Researcher", "Organisation", "Other"];
 
 const field =
-  "mt-1.5 block w-full rounded-lg border border-line bg-white px-3.5 py-2.5 text-ink placeholder:text-ink-muted/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30";
+  "mt-1.5 block w-full rounded-md border border-line bg-surface px-3.5 py-2.5 text-ink placeholder:text-ink-muted/70 focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/15";
 
 export function InterestForm() {
   const [sent, setSent] = useState(false);
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  function onSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const name = String(data.get("name") ?? "");
@@ -41,9 +42,9 @@ export function InterestForm() {
           {ROLES.map((r, i) => (
             <label
               key={r}
-              className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border border-line bg-white px-4 py-2 has-[:checked]:border-primary has-[:checked]:bg-mint has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary"
+              className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 has-checked:border-ink has-checked:bg-panel has-focus-visible:ring-2 has-focus-visible:ring-signal"
             >
-              <input type="radio" name="role" value={r} required defaultChecked={i === 0} className="accent-[var(--primary)]" />
+              <input type="radio" name="role" value={r} required defaultChecked={i === 0} className="accent-ink" />
               {r}
             </label>
           ))}
@@ -70,16 +71,27 @@ export function InterestForm() {
 
       <button
         type="submit"
-        className="inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-6 py-2.5 font-semibold text-primary-ink transition-colors hover:bg-primary-strong"
+        className="inline-flex min-h-11 items-center justify-center rounded-full bg-ink px-6 py-2.5 font-medium text-canvas transition-colors hover:bg-graphite"
       >
         Send via email
       </button>
 
-      <p className="text-[15px] text-ink-muted" aria-live="polite">
-        {sent
-          ? `Your email app should open with the message ready. If it didn't, write to ${CONTACT.email}.`
-          : "This opens your email app with the message filled in. Nothing is stored on this website."}
-      </p>
+      <div aria-live="polite" className="text-[15px] text-ink-muted">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.p
+            key={sent ? "sent" : "idle"}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.3 }}
+            className={sent ? "rounded-md bg-panel px-4 py-3 text-ink" : undefined}
+          >
+            {sent
+              ? `Your email app should open with the message ready. If it didn't, write to ${CONTACT.email}.`
+              : "This opens your email app with the message filled in. Nothing is stored on this website."}
+          </motion.p>
+        </AnimatePresence>
+      </div>
     </form>
   );
 }

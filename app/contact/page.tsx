@@ -19,7 +19,7 @@ export default function ContactPage() {
       <div className="mx-auto grid max-w-6xl gap-6 px-4 sm:px-6 md:grid-cols-12">
         <section id="interest" aria-labelledby="interest-title" className="scroll-mt-24 md:col-span-7">
           <Card className="p-6 sm:p-8">
-            <h2 id="interest-title" className="font-display text-2xl font-semibold tracking-tight">
+            <h2 id="interest-title" className="font-display text-2xl font-medium tracking-tight">
               Express interest
             </h2>
             <p className="mt-2 mb-6 text-ink-muted">For carers, families, researchers and organisations.</p>
@@ -29,12 +29,12 @@ export default function ContactPage() {
 
         <aside className="space-y-6 md:col-span-5">
           <Card>
-            <h2 className="font-display text-xl font-semibold">Reach the lab</h2>
+            <h2 className="font-display text-xl font-medium">Reach the lab</h2>
             <ul className="mt-4 space-y-4">
               <li className="flex gap-3">
-                <MailIcon className="mt-0.5 shrink-0 text-primary" />
+                <MailIcon className="mt-0.5 shrink-0 text-ink" />
                 <span>
-                  <a href={`mailto:${CONTACT.email}`} className="font-medium text-primary underline underline-offset-4">
+                  <a href={`mailto:${CONTACT.email}`} className="font-medium text-ink underline underline-offset-4">
                     {CONTACT.email}
                   </a>
                   <br />
@@ -42,7 +42,7 @@ export default function ContactPage() {
                 </span>
               </li>
               <li className="flex gap-3">
-                <PinIcon className="mt-0.5 shrink-0 text-primary" />
+                <PinIcon className="mt-0.5 shrink-0 text-ink" />
                 <address className="not-italic">
                   {CONTACT.address.map((line) => (
                     <span key={line} className="block">{line}</span>

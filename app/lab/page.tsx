@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ButtonLink, Callout, Card, PageIntro, Section } from "@/components/ui";
 import { PeopleIcon, RobotIcon, ShieldIcon } from "@/components/icons";
+import { Stagger, StaggerItem } from "@/components/motion";
 
 export const metadata: Metadata = { title: "The lab" };
 
@@ -38,17 +39,19 @@ export default function LabPage() {
         title="What the lab does"
         lead="The lab offers consultancy and recommendations on human factors in human–robot interaction."
       >
-        <div className="grid gap-4 sm:grid-cols-3">
+        <Stagger className="grid gap-4 sm:grid-cols-3" delay={0.15}>
           {focus.map((f) => (
-            <Card key={f.title}>
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-mint text-primary">
+            <StaggerItem key={f.title}>
+            <Card className="h-full">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-panel text-ink">
                 {f.icon}
               </span>
-              <h3 className="mt-4 font-display text-lg font-semibold">{f.title}</h3>
+              <h3 className="mt-4 font-display text-lg font-medium">{f.title}</h3>
               <p className="mt-2 text-ink-muted leading-relaxed">{f.text}</p>
             </Card>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </Section>
 
       <Section
@@ -70,13 +73,13 @@ export default function LabPage() {
 
       <Section title="Who it's for">
         <div className="grid gap-4 sm:grid-cols-2">
-          <Callout tone="sage" label="Today">
+          <Callout tone="positive" label="Today">
             Local industry, students and teachers exploring human–robot collaboration,
             workplace design and user trust.
           </Callout>
-          <Callout tone="mist" label="Tomorrow — our proposal">
+          <Callout tone="neutral" label="Tomorrow — our proposal">
             Carers, therapists, families and researchers working with people who cannot
-            speak. <Link href="/research" className="font-semibold text-primary underline underline-offset-4">See the research example</Link>.
+            speak. <Link href="/research" className="font-medium text-ink underline underline-offset-4">See the research example</Link>.
           </Callout>
         </div>
       </Section>
