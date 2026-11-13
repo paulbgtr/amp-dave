@@ -6,7 +6,7 @@ import { EASE } from "@/components/motion";
 
 /*
  * Technical line drawings of the lab's sensors.
- * Espresso hairlines, one orange accent each; strokes draw themselves in on scroll.
+ * Purple hairlines, one pink accent each; strokes draw themselves in on scroll.
  */
 
 const stroke: Variants = {

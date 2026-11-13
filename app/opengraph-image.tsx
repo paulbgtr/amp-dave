@@ -9,12 +9,12 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const C = {
-  canvas: "#f2ede4",
-  surface: "#faf7f1",
-  ink: "#221d18",
-  muted: "#625950",
-  line: "#dcd3c4",
-  signal: "#d9481a",
+  canvas: "#f6f6f8",
+  surface: "#ffffff",
+  ink: "#342b60",
+  muted: "#4a4b58",
+  line: "#dadae4",
+  signal: "#e4067e",
 };
 
 // Same fonts as the site, read at build time (the image is generated statically).

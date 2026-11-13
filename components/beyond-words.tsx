@@ -5,7 +5,7 @@ import { EASE } from "@/components/motion";
 
 /*
  * The site's signature: a speech bubble with no words in it — just a signal.
- * Communication beyond words; the orange dot is the moment a need is understood.
+ * Communication beyond words; the pink dot is the moment a need is understood.
  */
 
 const BUBBLE =
@@ -70,7 +70,7 @@ export function BeyondWords({ className = "" }: { className?: string }) {
   );
 }
 
-/** Logo mark: a small speech bubble holding a signal, ending in the orange dot. */
+/** Logo mark: a small speech bubble holding a signal, ending in the pink dot. */
 export function BeyondWordsMark({ size = 26 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" className="shrink-0">
