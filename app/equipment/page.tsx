@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { ButtonLink, Callout, Card, Dot, PageIntro, Section } from "@/components/ui";
-import { BrainIcon, EyeIcon, HandIcon, RobotIcon } from "@/components/icons";
+import { BrainIcon, EyeIcon, HandIcon, RobotIcon, PulseIcon } from "@/components/icons";
 import { EegDrawing, EyeTrackerDrawing, SkinResponseDrawing } from "@/components/device-drawings";
 
 export const metadata: Metadata = { title: "Equipment" };
@@ -13,6 +13,7 @@ type Device = {
   measures: string;
   how: string;
   tells: string[];
+  results?: string;
   comfort: string;
   drawing: ReactNode;
 };
@@ -23,8 +24,9 @@ const devices: Device[] = [
     icon: <EyeIcon />,
     name: "Eye tracker",
     measures: "Gaze — where a person looks, for how long, and in what order.",
-    how: "A small camera with infrared light follows the eyes. Screen-based trackers sit below a monitor; wearable trackers look like glasses.",
+    how: "A small camera with infrared light follows the eyes. Screen-based trackers sit below a monitor; wearable trackers look like glasses, and VR headsets can track gaze inside virtual environments.",
     tells: ["What catches attention", "What a person avoids", "Interest, confusion or fatigue"],
+    results: "Heatmaps of where people looked, gaze replays of each session, and over 30 measures for chosen areas of interest.",
     comfort: "Non-invasive. Nothing touches the face with screen-based trackers.",
     drawing: <EyeTrackerDrawing />,
   },
@@ -34,8 +36,8 @@ const devices: Device[] = [
     name: "EEG headset",
     measures: "Brain activity — tiny electrical signals at the surface of the scalp.",
     how: "A soft cap or headband with sensors rests on the head. It only listens; it never sends anything into the body.",
-    tells: ["Focus and relaxation", "Reactions to sounds, images or people", "Mental workload"],
-    comfort: "Painless. Modern dry sensors need no gel, and sessions can be short.",
+    tells: ["Focus and relaxation", "Reactions to sounds or images", "Mental workload"],
+    comfort: "Painless. Sensors only rest on the head, and sessions can be short.",
     drawing: <EegDrawing />,
   },
   {
@@ -55,7 +57,7 @@ export default function EquipmentPage() {
     <>
       <PageIntro eyebrow="Equipment" title="Sensors that notice what words can't.">
         <p>
-          The lab&apos;s biometric equipment measures gaze, brain activity and skin response.
+          The lab&apos;s biometric equipment measures gaze, brain activity and skin response, and also facial expressions, muscle and heart activity.
           Together, these signals show how a person reacts in the moment — without asking them
           to explain.
         </p>
@@ -100,6 +102,12 @@ export default function EquipmentPage() {
                   </ul>
                 </dd>
               </div>
+              {d.results && (
+                <div>
+                  <dt className="label-mono">Results</dt>
+                  <dd className="mt-2 leading-relaxed">{d.results}</dd>
+                </div>
+              )}
             </dl>
 
             <p className="flex items-start gap-3 border-t border-line bg-panel/50 px-6 py-3.5 text-[15px] md:col-span-2">
@@ -119,8 +127,17 @@ export default function EquipmentPage() {
             <RobotIcon />
           </span>
           <p className="leading-relaxed">
-            Collaborative and social robots are used to study trust, safety and comfort when
+            Collaborative and social robots are used to study attention, stress and comfort when
             people and machines share a task or a space.
+          </p>
+        </Card>
+        <Card className="mt-4 flex items-start gap-4">
+          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-panel text-ink">
+            <PulseIcon />
+          </span>
+          <p className="leading-relaxed">
+            The lab also records facial expressions, muscle activity (EMG) and heart activity (ECG).
+            All signals are recorded and synchronised in iMotions software.
           </p>
         </Card>
       </Section>
@@ -128,7 +145,7 @@ export default function EquipmentPage() {
       <Section title="Good to know">
         <div className="grid gap-4 sm:grid-cols-2">
           <Callout tone="positive" label="Strength">
-            Signals are measured continuously and objectively, so they can reveal reactions a
+            Signals are measured continuously and automatically, so they can reveal reactions a
             person cannot describe.
           </Callout>
           <Callout tone="caution" label="Limit">

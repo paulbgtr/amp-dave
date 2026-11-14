@@ -22,7 +22,7 @@ export default function ContactPage() {
             <h2 id="interest-title" className="font-display text-2xl font-medium tracking-tight">
               Express interest
             </h2>
-            <p className="mt-2 mb-6 text-ink-muted">For carers, families, researchers and organisations.</p>
+            <p className="mt-2 mb-6 text-ink-muted">For carers, families, researchers, students and industry.</p>
             <InterestForm />
           </Card>
         </section>

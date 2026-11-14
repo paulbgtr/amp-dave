@@ -3,7 +3,7 @@ import { ButtonLink, Callout, Card, CheckList, PageIntro, Section } from "@/comp
 import { CheckIcon, HomeIcon, LockIcon, PeopleIcon } from "@/components/icons";
 import { Stagger, StaggerItem } from "@/components/motion";
 
-export const metadata: Metadata = { title: "Research example" };
+export const metadata: Metadata = { title: "Care research" };
 
 const steps = [
   { title: "Listen", text: "Interview therapists and guardians to learn what they most need to understand." },
@@ -15,7 +15,7 @@ const steps = [
 export default function ResearchPage() {
   return (
     <>
-      <PageIntro eyebrow="Research example · proposal" title="Understanding needs beyond words.">
+      <PageIntro eyebrow="Care research · proposal" title="Understanding needs beyond words.">
         <p>
           A sound can mean &ldquo;I&apos;m hungry&rdquo;, &ldquo;I&apos;m tired&rdquo; or
           &ldquo;I want company&rdquo;. Often it is the same sound. We propose using the
@@ -72,7 +72,7 @@ export default function ResearchPage() {
           <CheckList
             items={[
               { icon: <LockIcon />, text: "Private by default, with guardians' consent for every session" },
-              { icon: <HomeIcon />, text: "We bring the study to the person — no difficult transport" },
+              { icon: <HomeIcon />, text: "Wearable sensors, so the study can come to the person" },
               { icon: <PeopleIcon />, text: "Built with therapists, carers and families" },
               { icon: <CheckIcon />, text: "Stop anytime, no questions asked" },
             ]}
@@ -84,8 +84,7 @@ export default function ResearchPage() {
         <Stagger as="ol" className="space-y-4" delay={0.15} gap={0.12}>
           <StaggerItem as="li">
             <Callout tone="positive" label="The need is in care">
-              The care worker described a real, daily problem. Industry showed little interest
-              in these measurements, so we focused on care.
+              The care worker described a real, daily problem that the lab's sensors could help study, so we chose care for our first proposal.
             </Callout>
           </StaggerItem>
           <StaggerItem as="li">

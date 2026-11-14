@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ButtonLink, Callout, Card, PageIntro, Section } from "@/components/ui";
-import { PeopleIcon, RobotIcon, ShieldIcon } from "@/components/icons";
+import { PeopleIcon, RobotIcon, BrainIcon } from "@/components/icons";
 import { Stagger, StaggerItem } from "@/components/motion";
 
 export const metadata: Metadata = { title: "The lab" };
@@ -10,17 +10,17 @@ const focus = [
   {
     icon: <PeopleIcon />,
     title: "Human factors",
-    text: "The social and psychological side of working with robots and intelligent systems: comfort, stress, attention and workload.",
+    text: "The social and psychological side of working with robots and machines: comfort, stress, attention and workload.",
   },
   {
-    icon: <ShieldIcon />,
-    title: "Trust and reliability",
-    text: "How people come to trust — or distrust — robotic systems and AI, and how to design systems that deserve that trust.",
+    icon: <BrainIcon />,
+    title: "Usability and workload",
+    text: "How easy robots and their control interfaces are to use, and how much mental effort they demand.",
   },
   {
     icon: <RobotIcon />,
     title: "Collaborative robotics",
-    text: "Modelling human–robot interaction, assessing risks, and designing robotic workplaces that are safe and human-centred.",
+    text: "How operators work alongside robots: their attention, stress and comfort during shared tasks.",
   },
 ];
 
@@ -30,14 +30,14 @@ export default function LabPage() {
       <PageIntro eyebrow="About the lab" title="People first, in every interaction with machines.">
         <p>
           The Human–Robot Interaction (HRI) Lab at TalTech Virumaa College studies how people
-          and robots work together. It was established in Ida-Virumaa with a focus on the
-          specific needs and challenges of the region.
+          and robots work together. Located in Ida-Virumaa, it provides unique opportunities 
+          for the region with its advanced behavioral research infrastructure.
         </p>
       </PageIntro>
 
       <Section
         title="What the lab does"
-        lead="The lab offers consultancy and recommendations on human factors in human–robot interaction."
+        lead="The lab studies human factors in human–robot interaction and is open to collaboration."
       >
         <Stagger className="grid gap-4 sm:grid-cols-3" delay={0.15}>
           {focus.map((f) => (
@@ -56,12 +56,11 @@ export default function LabPage() {
 
       <Section
         title="Our approach"
-        lead="Human-centred and trustworthy AI, built around usability, accessibility and reliability."
+        lead="Human-centred design, built around usability, safety and comfort."
       >
         <div className="space-y-4 text-lg leading-relaxed">
           <p>
-            The lab supports the adoption of human-centred, trustworthy artificial intelligence
-            and promotes innovation in human–robot collaboration through user-centred design.
+            The lab helps make robots and human–machine interfaces safer and easier to work with, by testing them with real people.
           </p>
           <p className="text-ink-muted">
             Using biometric equipment, researchers can see how people actually respond — where
@@ -74,14 +73,33 @@ export default function LabPage() {
       <Section title="Who it's for">
         <div className="grid gap-4 sm:grid-cols-2">
           <Callout tone="positive" label="Today">
-            Local industry, students and teachers exploring human–robot collaboration,
-            workplace design and user trust.
+            Cobot operators, engineers of human–machine interfaces, researchers evaluating control systems, and students and 
+            teachers. <a href="#cobot-example" className="font-medium text-ink underline underline-offset-4">See an example</a>.
           </Callout>
           <Callout tone="neutral" label="Tomorrow — our proposal">
             Carers, therapists, families and researchers working with people who cannot
-            speak. <Link href="/research" className="font-medium text-ink underline underline-offset-4">See the research example</Link>.
+            speak. <Link href="/research" className="font-medium text-ink underline underline-offset-4">See the care research</Link>.
           </Callout>
         </div>
+      </Section>
+
+      <Section title="Example: working with a cobot" lead="How the lab's equipment could be used in an industry study." id="cobot-example">
+        <Card className="flex items-start gap-4">
+          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-panel text-ink">
+            <RobotIcon />
+          </span>
+          <div className="space-y-3 leading-relaxed">
+            <p>
+              An operator programs a cobot for a new assembly task. Eye tracking glasses show where
+              they look and what they miss. A skin response sensor marks moments of stress, and EEG
+              shows how hard the task is for them.
+            </p>
+            <p className="text-ink-muted">
+              The results help engineers see which steps of the interface slow people down or
+              cause stress, so they know what to improve.
+            </p>
+          </div>
+        </Card>
       </Section>
 
       <Section title="Partners">
