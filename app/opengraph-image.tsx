@@ -11,22 +11,21 @@ export const contentType = "image/png";
 const C = {
   canvas: "#f2ede4",
   surface: "#faf7f1",
-  ink: "#221d18",
+  ink: "#342b60", // TalTech purple
   muted: "#625950",
   line: "#dcd3c4",
-  signal: "#d9481a",
+  signal: "#e4067e", // TalTech pink
 };
 
-// Same fonts as the site, read at build time (the image is generated statically).
+// Same fonts as the site. Read at module level so the image is pre-rendered at build time.
 const font = (pkg: string, file: string) => readFile(join(process.cwd(), "node_modules/@fontsource", pkg, "files", file));
+const [sans400, sans500, mono400] = await Promise.all([
+  font("instrument-sans", "instrument-sans-latin-400-normal.woff"),
+  font("instrument-sans", "instrument-sans-latin-500-normal.woff"),
+  font("dm-mono", "dm-mono-latin-400-normal.woff"),
+]);
 
-export default async function OpengraphImage() {
-  const [sans400, sans500, mono400] = await Promise.all([
-    font("instrument-sans", "instrument-sans-latin-400-normal.woff"),
-    font("instrument-sans", "instrument-sans-latin-500-normal.woff"),
-    font("dm-mono", "dm-mono-latin-400-normal.woff"),
-  ]);
-
+export default function OpengraphImage() {
   return new ImageResponse(
     (
       <div

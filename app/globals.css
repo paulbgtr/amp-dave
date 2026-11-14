@@ -1,18 +1,19 @@
 @import "tailwindcss";
 
 /*
- * Braun-inspired: warm materials, espresso type,
- * and one orange signal used like a power indicator — sparingly.
+ * Warm materials with a TalTech accent: cream and linen surfaces, espresso body text,
+ * TalTech purple for headings, buttons and drawings, TalTech pink as the one signal colour.
  */
 :root {
   --canvas: #f2ede4; /* warm cream */
   --surface: #faf7f1; /* paper */
   --panel: #e8e0d2; /* linen / light elm */
-  --ink: #221d18; /* espresso, not pure black */
-  --graphite: #4a4038;
+  --text: #2a2420; /* espresso — body text */
+  --ink: #342b60; /* TalTech purple — headings, buttons, icons, drawings */
+  --graphite: #272048; /* TalTech dark purple — hover, emphasis */
   --ink-muted: #625950;
   --line: #dcd3c4;
-  --signal: #d9481a; /* non-text use only: dots, focus, indicators */
+  --signal: #e4067e; /* TalTech pink — non-text use only: dots, focus, indicators */
   --go: #66803a; /* olive */
 }
 
@@ -20,6 +21,7 @@
   --color-canvas: var(--canvas);
   --color-surface: var(--surface);
   --color-panel: var(--panel);
+  --color-text: var(--text);
   --color-ink: var(--ink);
   --color-graphite: var(--graphite);
   --color-ink-muted: var(--ink-muted);
@@ -34,13 +36,13 @@
 
 html {
   background: var(--canvas);
-  color: var(--ink);
+  color: var(--text);
   scroll-behavior: smooth;
 }
 
 body {
   background: var(--canvas);
-  color: var(--ink);
+  color: var(--text);
   font-family: var(--font-sans-face), system-ui, sans-serif;
   font-feature-settings: "tnum";
 }
@@ -49,6 +51,16 @@ body {
   outline: 2px solid var(--signal);
   outline-offset: 3px;
   border-radius: 4px;
+}
+
+/* Headings in TalTech purple (base layer, so text-* utilities still win) */
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--ink);
+  }
 }
 
 ::selection {

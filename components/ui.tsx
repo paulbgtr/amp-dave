@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 
-/** Small round indicator, like the power light on a Braun device. */
+/** Small round indicator, like the status light on a device. */
 export function Dot({ tone = "signal", className = "" }: { tone?: "signal" | "go" | "ink"; className?: string }) {
   const color = { signal: "bg-signal", go: "bg-go", ink: "bg-ink" }[tone];
   return <span aria-hidden="true" className={`inline-block h-2 w-2 shrink-0 rounded-full ${color} ${className}`} />;
@@ -101,7 +101,7 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
   return <div className={`rounded-md border border-line bg-surface p-6 ${className}`}>{children}</div>;
 }
 
-/** Bordered panel with a status light: green = good, orange = caution, black = neutral. */
+/** Bordered panel with a status light: green = good, pink = caution, purple = neutral. */
 export function Callout({
   tone,
   label,
