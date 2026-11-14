@@ -42,3 +42,9 @@ The free plan keeps 30 days of history — export a CSV before it matters.
 
 Every page is static, so any static host works. On Vercel: import the GitHub repo, keep the defaults, deploy.
 The share image picks up the Vercel address automatically; for a custom domain set `NEXT_PUBLIC_SITE_URL`.
+
+## Licence
+
+The code is MIT-licensed — see [`LICENSE`](LICENSE). The written content and illustrations
+(speech-bubble identity, equipment line drawings, share image) are © 2026 team AMP Dave and not covered
+by the MIT licence. This is a student concept project and not an official TalTech website.
