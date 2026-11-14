@@ -57,7 +57,7 @@ export default function EquipmentPage() {
     <>
       <PageIntro eyebrow="Equipment" title="Sensors that notice what words can't.">
         <p>
-          The lab&apos;s biometric equipment measures gaze, brain activity and skin response, and also facial expressions, muscle and heart activity.
+          The lab&apos;s biometric equipment measures gaze, brain and heart activity, muscle tension, skin response and facial expressions.
           Together, these signals show how a person reacts in the moment — without asking them
           to explain.
         </p>

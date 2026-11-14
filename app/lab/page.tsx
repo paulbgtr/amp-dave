@@ -30,8 +30,8 @@ export default function LabPage() {
       <PageIntro eyebrow="About the lab" title="People first, in every interaction with machines.">
         <p>
           The Human–Robot Interaction (HRI) Lab at TalTech Virumaa College studies how people
-          and robots work together. Located in Ida-Virumaa, it provides unique opportunities 
-          for the region with its advanced behavioral research infrastructure.
+          and robots work together. Located in Ida-Virumaa, it provides unique opportunities
+          for the region with its advanced behavioural research infrastructure.
         </p>
       </PageIntro>
 

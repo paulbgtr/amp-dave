@@ -40,9 +40,6 @@ export const HandIcon = (p: SVGProps<SVGSVGElement>) => (
 export const RobotIcon = (p: SVGProps<SVGSVGElement>) => (
   <Icon {...p}><rect x="5" y="8" width="14" height="11" rx="3" /><path d="M12 8V4.5" /><circle cx="12" cy="3.5" r="1" /><circle cx="9.5" cy="13" r="1" /><circle cx="14.5" cy="13" r="1" /><path d="M2.5 12.5v3M21.5 12.5v3" /></Icon>
 );
-export const ShieldIcon = (p: SVGProps<SVGSVGElement>) => (
-  <Icon {...p}><path d="M12 3l7 3v5.5c0 4.5-3 8-7 9.5-4-1.5-7-5-7-9.5V6l7-3Z" /><path d="M9 12l2 2 4-4" /></Icon>
-);
 export const HomeIcon = (p: SVGProps<SVGSVGElement>) => (
   <Icon {...p}><path d="M4 11l8-6.5 8 6.5" /><path d="M6 9.5V19h12V9.5" /><path d="M10 19v-5h4v5" /></Icon>
 );

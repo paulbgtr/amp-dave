@@ -84,7 +84,7 @@ export default function ResearchPage() {
         <Stagger as="ol" className="space-y-4" delay={0.15} gap={0.12}>
           <StaggerItem as="li">
             <Callout tone="positive" label="The need is in care">
-              The care worker described a real, daily problem that the lab's sensors could help study, so we chose care for our first proposal.
+              The care worker described a real, daily problem that the lab&apos;s sensors could help study, so we chose care for our first proposal.
             </Callout>
           </StaggerItem>
           <StaggerItem as="li">

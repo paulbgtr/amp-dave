@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ButtonLink, Eyebrow } from "@/components/ui";
-import { ArrowIcon, BrainIcon, EyeIcon, HandIcon, PeopleIcon, RobotIcon, ShieldIcon } from "@/components/icons";
+import { ArrowIcon, BrainIcon, EyeIcon, HandIcon, PeopleIcon, RobotIcon } from "@/components/icons";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { BeyondWords } from "@/components/beyond-words";
 
@@ -17,7 +17,7 @@ const explore = [
     text: "What we study, how we work, and who we work with.",
     tags: [
       { icon: <PeopleIcon />, label: "Human factors" },
-      { icon: <ShieldIcon />, label: "Trust" },
+      { icon: <BrainIcon />, label: "Usability" },
       { icon: <RobotIcon />, label: "Collaborative robots" },
     ],
   },
