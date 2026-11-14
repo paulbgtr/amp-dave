@@ -55,3 +55,6 @@ export const PinIcon = (p: SVGProps<SVGSVGElement>) => (
 export const ArrowIcon = (p: SVGProps<SVGSVGElement>) => (
   <Icon {...p}><path d="M5 12h14M13 6l6 6-6 6" /></Icon>
 );
+export const PulseIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}><path d="M2.5 12h4l2.5-6 4 12 2.5-6h6" /></Icon>
+);

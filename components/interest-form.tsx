@@ -6,7 +6,7 @@ import { CONTACT, FORMSPREE_ENDPOINT } from "@/lib/site";
 import { EASE } from "@/components/motion";
 import { Dot, Eyebrow } from "@/components/ui";
 
-const ROLES = ["Parent or guardian", "Carer or therapist", "Researcher", "Organisation", "Other"];
+const ROLES = ["Parent or guardian", "Carer or therapist", "Researcher", "Engineer or industry", "Student or teacher", "Organisation", "Other"];
 const INTERESTS = ["Taking part in a pilot", "Collaborating on the research", "Just keep me updated"];
 const SOURCES = ["Facebook", "Friend or colleague", "TalTech", "Other"];
 

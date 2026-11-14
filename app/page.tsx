@@ -6,7 +6,7 @@ import { BeyondWords } from "@/components/beyond-words";
 
 const specs = [
   { label: "Location", value: "Kohtla-Järve, Ida-Virumaa" },
-  { label: "Open to", value: "Researchers, carers, organisations" },
+  { label: "Open to", value: "Industry, researchers, carers, students" },
   { label: "Principle", value: "Consent first, always voluntary" },
 ];
 
@@ -24,7 +24,7 @@ const explore = [
   {
     href: "/equipment",
     title: "Equipment",
-    text: "Sensors that measure gaze, brain activity and skin response.",
+    text: "Sensors that measure gaze, brain, muscle and heart activity, skin response and facial expressions.",
     tags: [
       { icon: <EyeIcon />, label: "Eye tracker" },
       { icon: <BrainIcon />, label: "EEG" },
@@ -48,8 +48,8 @@ export default function Home() {
           </StaggerItem>
           <StaggerItem>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-muted sm:text-xl">
-              Technology that reads what people can&apos;t say already exists in Ida-Virumaa.
-              We study how people and machines work together — and how gaze, brain and body
+              Technology that sees reactions words can&apos;t express already exists in Ida-Virumaa.
+              We study how people and machines work together, and how gaze, brain and body
               signals could help us understand the people we care for.
             </p>
           </StaggerItem>
@@ -81,7 +81,7 @@ export default function Home() {
         <Reveal>
           <div className="grid gap-10 rounded-md bg-panel px-6 py-10 sm:px-10 md:grid-cols-12 md:py-14">
             <div className="md:col-span-8">
-              <Eyebrow>Research example</Eyebrow>
+              <Eyebrow>Care research</Eyebrow>
               <h2 id="idea-title" className="mt-6 font-serif text-3xl italic leading-[1.15] text-balance sm:text-[2.6rem]">
                 A sound can mean &ldquo;I&apos;m hungry&rdquo;, &ldquo;I&apos;m tired&rdquo; or
                 &ldquo;I want company&rdquo;. Often, it&apos;s the same sound.
@@ -89,7 +89,7 @@ export default function Home() {
             </div>
             <div className="flex flex-col justify-end gap-6 md:col-span-4">
               <p className="leading-relaxed text-graphite">
-                People who can&apos;t speak often go unheard. We want to use the lab&apos;s
+                People who have trouble speaking often go unheard. We want to use the lab&apos;s
                 sensors to help carers understand what they need — with consent, in small
                 pilots, brought to the person.
               </p>
