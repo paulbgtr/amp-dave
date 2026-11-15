@@ -24,7 +24,6 @@ const OUT_FILE = join(OUT_DIR, "hri-lab-demo.mp4");
 
 const args = new Set(process.argv.slice(2));
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 // ---------------------------------------------------------------- server
 
@@ -98,11 +97,24 @@ const OVERLAY_JS = `
 `;
 
 // ---------------------------------------------------------------- helpers
+// Everything here is tuned to look like a quick, slightly imperfect human: variable speed,
+// cursor that drifts while the page is being read, small overshoots, uneven typing.
+// A seeded random generator keeps every recording the same, so a re-run is a re-run, not a surprise.
+
+let seed = 11;
+const rnd = () => {
+  seed = (seed + 0x6d2b79f5) | 0;
+  let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+const between = (a: number, b: number) => a + rnd() * (b - a);
+const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 type Pt = { x: number; y: number };
 
 class Director {
-  private cur: Pt = { x: VIEW.width / 2, y: VIEW.height / 2 };
+  private cur: Pt = { x: VIEW.width * 0.62, y: VIEW.height * 0.55 };
   constructor(readonly page: Page) {}
 
   pause = (ms: number) => sleep(ms);
@@ -111,7 +123,7 @@ class Director {
     await this.page.evaluate((t) => {
       const el = document.getElementById("demo-caption")!;
       if (t === null) return el.classList.remove("on");
-      el.textContent = t;
+      el.textContent = t; // swapping text while visible reads as a quick cross-cut
       el.classList.add("on");
     }, text);
   }
@@ -130,7 +142,8 @@ class Director {
     );
   }
 
-  async scrollTo(top: number, ms = 1400) {
+  /** Smooth scroll with a fast start and a soft landing, like a flick of the wheel. */
+  async scrollTo(top: number, ms = 700) {
     await this.page.evaluate(
       ([to, dur]) =>
         new Promise<void>((done) => {
@@ -138,10 +151,10 @@ class Director {
           const max = document.documentElement.scrollHeight - innerHeight;
           const target = Math.max(0, Math.min(to, max));
           const t0 = performance.now();
-          const e = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
           const step = (now: number) => {
             const t = Math.min(1, (now - t0) / dur);
-            scrollTo({ top: from + (target - from) * e(t), behavior: "instant" });
+            const e = 1 - Math.pow(1 - t, 3);
+            scrollTo({ top: from + (target - from) * e, behavior: "instant" });
             if (t < 1) requestAnimationFrame(step);
             else done();
           };
@@ -151,63 +164,118 @@ class Director {
     );
   }
 
-  /** Scroll down a screenful at a time, pausing so each part can be read. */
-  async tour({ stops = 6, pauseMs = 1500, fraction = 0.72 } = {}) {
+  /** Scroll so that the element sits near the top of the screen. */
+  async scrollToEl(selector: string, ms = 800) {
+    const top = await this.page.evaluate(
+      (s) => document.querySelector(s)!.getBoundingClientRect().top + scrollY - 120,
+      selector,
+    );
+    await this.scrollTo(top, ms);
+  }
+
+  /** Move the mouse with a human-ish path: quick start, slow arrival, a little arc, a little shake. */
+  async glide(to: Pt, ms?: number, overshoot = false) {
+    const from = { ...this.cur };
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    const dur = ms ?? clamp(200 + dist * 0.3, 240, 600);
+
+    if (overshoot && dist > 450) {
+      const over = between(8, 18);
+      await this.glide({ x: to.x + (dx / dist) * over, y: to.y + (dy / dist) * over }, dur * 0.9);
+      await this.glide(to, 110);
+      return;
+    }
+
+    const steps = Math.max(10, Math.round(dur / 16));
+    const bow = dist * between(0.03, 0.07) * (rnd() > 0.5 ? 1 : -1);
+    for (let i = 1; i <= steps; i++) {
+      const t = 1 - Math.pow(1 - i / steps, 2.6);
+      const arc = Math.sin(Math.PI * t) * bow;
+      const shake = i < steps ? between(-0.7, 0.7) : 0;
+      await this.page.mouse.move(
+        from.x + dx * t - (dy / dist) * arc + shake,
+        from.y + dy * t + (dx / dist) * arc + shake,
+      );
+      await sleep(dur / steps);
+    }
+    this.cur = to;
+  }
+
+  /** Spend `ms` looking at the page: the cursor wanders a little instead of freezing. */
+  async idle(ms: number) {
+    const end = Date.now() + ms;
+    while (Date.now() < end - 150) {
+      const next = {
+        x: clamp(this.cur.x + between(-90, 90), 120, VIEW.width - 120),
+        y: clamp(this.cur.y + between(-50, 50), 160, VIEW.height - 160),
+      };
+      await this.glide(next, between(300, 480));
+      await sleep(Math.min(between(60, 200), Math.max(0, end - Date.now())));
+    }
+  }
+
+  /** Scroll down in uneven flicks while the cursor drifts, pausing briefly to take things in. */
+  async tour({ stops = 4, pauseMs = 550 } = {}) {
     for (let i = 0; i < stops; i++) {
       const { y, max } = await this.page.evaluate(() => ({
         y: scrollY,
         max: document.documentElement.scrollHeight - innerHeight,
       }));
       if (y >= max - 2) break;
-      await this.scrollTo(y + VIEW.height * fraction);
-      await sleep(pauseMs);
+      const dur = between(520, 800);
+      await Promise.all([
+        this.scrollTo(y + VIEW.height * between(0.62, 0.95), dur),
+        this.glide(
+          { x: clamp(this.cur.x + between(-160, 160), 160, VIEW.width - 160), y: between(280, 640) },
+          dur,
+        ),
+      ]);
+      await this.idle(pauseMs * between(0.7, 1.3));
     }
   }
 
-  /** Bring an element comfortably into view (centre-ish), if it is not already. */
+  /** Bring an element into view (upper-middle of the screen) if it is not comfortably visible. */
   async reveal(target: Locator) {
     const box = await target.boundingBox();
     if (!box) throw new Error("element not visible");
-    if (box.y > 160 && box.y + box.height < VIEW.height - 160) return;
+    if (box.y > 140 && box.y + box.height < VIEW.height - 140) return;
     const y = await this.page.evaluate(() => scrollY);
-    await this.scrollTo(y + box.y - VIEW.height * 0.3, 1100);
-    await sleep(250);
-  }
-
-  async glide(to: Pt, ms = 750) {
-    const from = { ...this.cur };
-    const steps = Math.max(14, Math.round(ms / 16));
-    const dx = to.x - from.x;
-    const dy = to.y - from.y;
-    const bow = Math.hypot(dx, dy) * 0.07; // slight arc so it reads as a human hand
-    for (let i = 1; i <= steps; i++) {
-      const t = ease(i / steps);
-      const arc = Math.sin(Math.PI * t) * bow;
-      await this.page.mouse.move(from.x + dx * t - (dy / (Math.hypot(dx, dy) || 1)) * arc, from.y + dy * t + (dx / (Math.hypot(dx, dy) || 1)) * arc);
-      await sleep(ms / steps);
-    }
-    this.cur = to;
+    await this.scrollTo(y + box.y - VIEW.height * 0.35, 600);
+    await sleep(80);
   }
 
   async moveTo(target: Locator, at: "centre" | "left" = "centre") {
     await this.reveal(target);
     const b = (await target.boundingBox())!;
-    await this.glide({ x: at === "left" ? b.x + 48 : b.x + b.width / 2, y: b.y + b.height / 2 });
+    await this.glide(
+      {
+        x: at === "left" ? b.x + between(30, 60) : b.x + b.width * between(0.35, 0.65),
+        y: b.y + b.height * between(0.4, 0.6),
+      },
+      undefined,
+      true,
+    );
   }
 
   async click(target: Locator, at: "centre" | "left" = "centre") {
     await this.moveTo(target, at);
-    await sleep(180);
+    await sleep(between(60, 140));
     await this.page.mouse.down();
-    await sleep(90);
+    await sleep(between(50, 90));
     await this.page.mouse.up();
-    await sleep(250);
+    await sleep(between(110, 190));
   }
 
+  /** Click into a field and type with uneven rhythm: fast runs, small hesitations. */
   async type(target: Locator, text: string) {
     await this.click(target, "left");
-    await this.page.keyboard.type(text, { delay: 65 });
-    await sleep(350);
+    for (const ch of text) {
+      await this.page.keyboard.type(ch);
+      await sleep(between(18, 55) + (" ,.—".includes(ch) && rnd() > 0.6 ? between(60, 130) : 0));
+    }
+    await sleep(between(120, 220));
   }
 
   /** Click a link and wait for the client-side route change to land. */
@@ -215,12 +283,13 @@ class Director {
     await this.click(target);
     await this.page.waitForURL((u) => u.pathname === path || (u.pathname + u.hash).startsWith(path));
     await this.page.evaluate(() => document.fonts.ready);
-    await sleep(900); // let the page's entrance animation finish
+    await sleep(380); // let the page's entrance animation get going
   }
 }
 
 // ---------------------------------------------------------------- flows
 // Each flow = one caption + the actions that happen under it. Reorder or delete freely.
+// Captions swap directly from one flow to the next, so there is never dead air between them.
 
 type Flow = { caption: string; run: (d: Director) => Promise<void> };
 
@@ -230,47 +299,49 @@ const FLOWS: Flow[] = [
   {
     caption: "Meet the HRI Lab",
     async run(d) {
-      await d.pause(2200); // hero animates in
-      await d.glide({ x: 1180, y: 380 }, 900); // hover the speech-bubble artwork
-      await d.pause(1800);
-      await d.page.getByRole("heading", { name: /A sound can mean/ }).waitFor();
-      await d.scrollTo(560, 1500);
-      await d.pause(2200);
+      await d.pause(900); // hero animates in
+      await d.glide({ x: 1150, y: 360 }); // sweep over the speech-bubble artwork
+      await d.pause(450);
+      await Promise.all([d.scrollTo(560, 700), d.glide({ x: 1000, y: 520 }, 700)]);
+      await d.idle(500);
     },
   },
   {
     caption: "Helping carers understand people who can’t speak",
     async run(d) {
       await d.go(d.page.getByRole("link", { name: "Read the idea" }), "/research");
-      await d.pause(800);
-      await d.tour({ stops: 7, pauseMs: 1500 });
+      await d.tour({ stops: 4, pauseMs: 500 });
     },
   },
   {
     caption: "Sensors that read gaze, brain and body signals",
     async run(d) {
       await d.go(d.page.getByRole("link", { name: "How the sensors work" }).first(), "/equipment");
-      await d.pause(800);
-      await d.tour({ stops: 7, pauseMs: 1400 });
+      await d.idle(300);
+      await d.click(d.page.getByRole("link", { name: "Eye tracker" }).first()); // anchor jump, native smooth scroll
+      await d.idle(900);
+      await d.scrollToEl("#eeg");
+      await d.idle(600);
+      await d.scrollToEl("#skin-response");
+      await d.idle(600);
+      await d.tour({ stops: 2, pauseMs: 450 });
     },
   },
   {
     caption: "How the lab works with industry",
     async run(d) {
       await d.go(nav(d, "/lab"), "/lab");
-      await d.pause(900);
-      await d.tour({ stops: 5, pauseMs: 1400 });
+      await d.tour({ stops: 3, pauseMs: 450 });
     },
   },
   {
     caption: "Anyone can get involved — consent first",
     async run(d) {
       await d.go(d.page.getByRole("link", { name: "Get in touch" }).first(), "/contact");
-      await d.pause(900);
 
       const form = d.page.locator("form");
-      await d.scrollTo(380, 1200);
-      await d.pause(500);
+      await d.scrollTo(380, 650);
+      await d.pause(150);
 
       await d.type(form.locator("#name"), "Maria Tamm");
       await d.type(form.locator("#email"), "maria.tamm@example.com");
@@ -278,16 +349,12 @@ const FLOWS: Flow[] = [
       await d.type(form.locator("#org"), "Kohtla-Järve Care Home");
       await d.click(form.getByText("Taking part in a pilot", { exact: true }));
       await d.click(form.getByText("TalTech", { exact: true }));
-      await d.type(
-        form.locator("#feedback"),
-        "Makes sense. I would want families to stay in control throughout.",
-      );
+      await d.type(form.locator("#feedback"), "Makes sense. Families should stay in control.");
       await d.click(form.locator('input[name="consent"]'));
-      await d.pause(500);
       await d.click(form.getByRole("button", { name: "Send" }));
 
       await d.page.getByRole("heading", { name: /Thank you/ }).waitFor();
-      await d.pause(3200);
+      await d.idle(2000);
     },
   },
 ];
@@ -313,7 +380,7 @@ async function main() {
 
     // Never hit the real Formspree inbox: pretend it accepted the submission.
     await context.route("https://formspree.io/**", async (route) => {
-      await sleep(1100); // long enough to see the "Sending…" state
+      await sleep(700); // long enough to see the "Sending…" state
       await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
     });
 
@@ -325,20 +392,18 @@ async function main() {
     await d.card("Human–Robot Interaction Lab", "TalTech Virumaa College · concept site by team AMP Dave", true);
     await page.waitForTimeout(100);
     const trimStart = (Date.now() - t0) / 1000 - 0.15; // everything before the title card is page loading
-    await d.pause(2600);
+    await d.pause(1500);
     await d.card(null);
-    await d.pause(900);
+    await d.pause(300);
 
     for (const flow of FLOWS) {
-      await d.caption(flow.caption);
-      await d.pause(500);
+      await d.caption(flow.caption); // swaps straight from the previous caption, no gap
       await flow.run(d);
-      await d.caption(null);
-      await d.pause(600);
     }
+    await d.caption(null);
 
     await d.card("HRI Lab", "Team AMP Dave · TalTech Virumaa College");
-    await d.pause(3000);
+    await d.pause(2200);
 
     await context.close(); // flushes the video to disk
     const raw = readdirSync(RAW_DIR).find((f) => f.endsWith(".webm"));
