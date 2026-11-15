@@ -15,6 +15,21 @@
   --line: #dcd3c4;
   --signal: #e4067e; /* TalTech pink — non-text use only: dots, focus, indicators */
   --go: #66803a; /* olive */
+
+  /*
+   * Soft UI. Two corner sizes (a card, and anything nested inside one), pills for things
+   * you press, and three depths: raised (cards), lifted (a card under the pointer) and
+   * sunk (wells: fields, drawings, notes). Shadows are tinted with the warm text colour.
+   */
+  --radius-card: 1.5rem;
+  --radius-inner: 1rem;
+  --shadow-soft: inset 0 1px 0 rgb(255 255 255 / 0.75), 0 1px 2px rgb(74 56 32 / 0.05),
+    0 4px 10px -4px rgb(74 56 32 / 0.06), 0 16px 32px -16px rgb(74 56 32 / 0.16);
+  --shadow-lift: inset 0 1px 0 rgb(255 255 255 / 0.75), 0 2px 4px rgb(74 56 32 / 0.05),
+    0 10px 20px -8px rgb(74 56 32 / 0.1), 0 28px 48px -20px rgb(74 56 32 / 0.24);
+  --shadow-well: inset 0 1px 2px rgb(74 56 32 / 0.09), inset 0 0 0 1px rgb(74 56 32 / 0.04);
+  --shadow-button: inset 0 1px 0 rgb(255 255 255 / 0.14), 0 1px 2px rgb(39 32 72 / 0.25),
+    0 10px 20px -10px rgb(52 43 96 / 0.6);
 }
 
 @theme inline {
@@ -29,9 +44,7 @@
   --color-signal: var(--signal);
   --color-go: var(--go);
   --font-sans: var(--font-sans-face);
-  --font-display: var(--font-sans-face);
   --font-mono: var(--font-mono-face);
-  --font-serif: var(--font-serif-face);
 }
 
 html {
@@ -50,7 +63,6 @@ body {
 :focus-visible {
   outline: 2px solid var(--signal);
   outline-offset: 3px;
-  border-radius: 4px;
 }
 
 /* Headings in TalTech purple (base layer, so text-* utilities still win) */
@@ -67,13 +79,93 @@ body {
   background: var(--panel);
 }
 
-/* Small uppercase mono label: captions, spec labels, status lines */
+/*
+ * Type. One family (DM Sans, with DM Mono for small labels) and a short scale.
+ * Headings are always medium weight with slightly tight tracking; nothing is italic or serif.
+ */
+
+/* Small uppercase mono label: eyebrows, captions, spec labels, step numbers */
 @utility label-mono {
   font-family: var(--font-mono-face), monospace;
   font-size: 0.8125rem;
+  line-height: 1.4;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--ink-muted);
+}
+/* Section and card headings */
+@utility type-title {
+  font-size: 1.5rem;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+/* Headings inside a card */
+@utility type-subtitle {
+  font-size: 1.125rem;
+  line-height: 1.35;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+/* A sentence set large: quotes, calls to action */
+@utility type-statement {
+  font-size: clamp(1.5rem, 1.15rem + 1.6vw, 2.25rem);
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+/* Introductory paragraphs */
+@utility type-lead {
+  font-size: 1.125rem;
+  line-height: 1.65;
+}
+
+/* Surfaces */
+@utility rounded-card {
+  border-radius: var(--radius-card);
+}
+@utility rounded-inner {
+  border-radius: var(--radius-inner);
+}
+/* Raised paper card */
+@utility soft-card {
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+/* The same card when it is a link: rises under the pointer */
+@utility soft-card-link {
+  transition:
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    translate 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  &:hover {
+    box-shadow: var(--shadow-lift);
+    translate: 0 -2px;
+  }
+}
+/* Sunk area inside a card: fields, drawings, notes */
+@utility soft-well {
+  border-radius: var(--radius-inner);
+  background: var(--canvas);
+  box-shadow: var(--shadow-well);
+}
+/* Linen block for calls to action: tinted, flat */
+@utility soft-tint {
+  border-radius: var(--radius-card);
+  background: var(--panel);
+}
+@utility shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
+@utility shadow-button {
+  box-shadow: var(--shadow-button);
+}
+
+/* Same curve as EASE in components/motion.tsx, for CSS hover and press transitions */
+@utility ease-calm {
+  --tw-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Auto-numbered section titles: 01, 02, 03… */
@@ -87,6 +179,7 @@ main {
   margin-bottom: 0.75rem;
   font-family: var(--font-mono-face), monospace;
   font-size: 0.8125rem;
+  line-height: 1.4;
   font-weight: 400;
   letter-spacing: 0.08em;
   color: var(--ink-muted);

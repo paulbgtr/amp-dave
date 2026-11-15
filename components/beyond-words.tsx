@@ -1,88 +1,149 @@
 "use client";
 
-import { motion } from "motion/react";
-import { EASE } from "@/components/motion";
+import { motion, useReducedMotion } from "motion/react";
+import { EASE, EASE_TRACE, POP } from "@/components/motion";
+import { HERO, MARK } from "@/lib/artwork";
 
 /*
  * The site's signature: a speech bubble with no words in it — just a signal.
  * Communication beyond words; the pink dot is the moment a need is understood.
+ *
+ * Timeline (seconds). The outline is drawn and lifts off its linen plate, the chart
+ * furniture fades in, the signal is traced at a steady pace, and the pink dot lands at the
+ * instant the trace passes its peak; the ring then radiates from the dot. PEAK_AT is the
+ * fraction of the trace's duration at which the pen reaches the peak (its share of the
+ * path's length, mapped through EASE_TRACE) — re-measure it if HERO.trace changes.
  */
-
-const BUBBLE =
-  "M94 100 H306 A24 24 0 0 1 330 124 V246 A24 24 0 0 1 306 270 H170 L118 318 L128 270 H94 A24 24 0 0 1 70 246 V124 A24 24 0 0 1 94 100 Z";
-
-const WAVE =
-  "M106 186 C116 186 120 177 128 177 S140 195 148 195 S160 181 168 181 S180 191 188 191 S204 186 212 186 C224 186 228 146 240 146 S256 204 266 204 S284 186 294 186";
-
-const PEAK = { x: 240, y: 146 };
+const BUBBLE = { at: 0.1, for: 0.9 };
+const TRACE = { at: 0.8, for: 1.3 };
+const PEAK_AT = 0.561;
+const HIT = TRACE.at + TRACE.for * PEAK_AT;
+const FILL_AT = BUBBLE.at + BUBBLE.for * 0.6;
 
 export function BeyondWords({ className = "" }: { className?: string }) {
+  const reduce = useReducedMotion();
+  const { peak } = HERO;
   return (
     <motion.svg
-      viewBox="40 70 320 270"
+      viewBox={HERO.viewBox}
       className={`block h-auto w-full ${className}`}
       role="img"
       aria-label="A speech bubble with no words, only a signal line with one highlighted peak"
       initial="hidden"
       animate="show"
     >
+      {/* linen plate: slides out from behind the bubble as it fills, giving it a little lift */}
       <motion.path
-        d={BUBBLE}
+        d={HERO.bubble}
+        fill="var(--panel)"
+        initial={{ opacity: 0, x: 0, y: 0 }}
+        animate={{ opacity: 1, x: HERO.plateOffset, y: HERO.plateOffset }}
+        transition={{ duration: 0.7, ease: EASE, delay: FILL_AT, opacity: { duration: 0.3, ease: "linear", delay: FILL_AT } }}
+      />
+      <motion.path
+        d={HERO.bubble}
         fill="var(--surface)"
         stroke="var(--ink)"
-        strokeWidth={1.75}
+        strokeWidth={2}
         strokeLinejoin="round"
         initial={{ pathLength: 0, fillOpacity: 0 }}
         animate={{ pathLength: 1, fillOpacity: 1 }}
-        transition={{ pathLength: { duration: 1.2, ease: EASE, delay: 0.2 }, fillOpacity: { duration: 0.6, delay: 1 } }}
+        transition={{
+          pathLength: { duration: BUBBLE.for, ease: EASE_TRACE, delay: BUBBLE.at },
+          fillOpacity: { duration: 0.5, ease: "linear", delay: FILL_AT },
+        }}
       />
-      <motion.path
-        d={WAVE}
+      {/* chart furniture: baseline and time ticks */}
+      <motion.g
         fill="none"
         stroke="var(--ink)"
-        strokeWidth={1.75}
+        strokeWidth={1}
         strokeLinecap="round"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ pathLength: { duration: 1.4, ease: EASE, delay: 1.1 }, opacity: { duration: 0.01, delay: 1.1 } }}
-      />
-      <motion.circle
-        cx={PEAK.x}
-        cy={PEAK.y}
-        r={7}
-        fill="var(--signal)"
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 420, damping: 20, delay: 2.1 }}
-      />
-      <motion.circle
-        cx={PEAK.x}
-        cy={PEAK.y}
-        r={14}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, ease: "linear", delay: TRACE.at - 0.1 }}
+      >
+        <path d={HERO.baseline} strokeDasharray="1 7" strokeOpacity={0.45} />
+        <path d={HERO.ticks} strokeOpacity={0.35} />
+      </motion.g>
+      <motion.path
+        d={HERO.marker}
         fill="none"
         stroke="var(--signal)"
         strokeWidth={1}
-        initial={{ opacity: 0, scale: 0.6 }}
-        animate={{ opacity: [0, 0.6, 0], scale: [0.6, 1.3, 1.6] }}
-        transition={{ duration: 2.6, ease: "easeOut", repeat: Infinity, repeatDelay: 1.4, delay: 2.5 }}
+        strokeLinecap="round"
+        strokeDasharray="2 5"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.8 }}
+        transition={{ duration: 0.4, ease: "linear", delay: HIT + 0.1 }}
+      />
+      <motion.path
+        d={HERO.trace}
+        fill="none"
+        stroke="var(--ink)"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={{ pathLength: 0, opacity: 0 }}
+        animate={{ pathLength: 1, opacity: 1 }}
+        transition={{
+          pathLength: { duration: TRACE.for, ease: EASE_TRACE, delay: TRACE.at },
+          opacity: { duration: 0.01, delay: TRACE.at },
+        }}
+      />
+      {/* soft halo, then the dot itself */}
+      <motion.circle
+        cx={peak.x}
+        cy={peak.y}
+        r={15}
+        fill="var(--signal)"
+        fillOpacity={0.14}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.6, ease: EASE, delay: HIT + 0.05 }}
+      />
+      <motion.circle
+        cx={peak.x}
+        cy={peak.y}
+        r={7}
+        fill="var(--signal)"
+        stroke="var(--surface)"
+        strokeWidth={2}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ ...POP, delay: HIT }}
+      />
+      <motion.circle
+        cx={peak.x}
+        cy={peak.y}
+        r={15}
+        fill="none"
+        stroke="var(--signal)"
+        strokeWidth={1}
+        // Starts at the dot's own edge and expands outward as it fades, like a ping.
+        // Under reduced motion there is no loop at all.
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={reduce ? { opacity: 0 } : { opacity: [0, 0.7, 0], scale: [0.5, 2] }}
+        transition={{
+          duration: 1.8,
+          ease: [0.16, 1, 0.3, 1],
+          opacity: { duration: 1.8, times: [0, 0.06, 1], ease: "easeOut", repeat: Infinity, repeatDelay: 2.4, delay: HIT + 0.12 },
+          repeat: Infinity,
+          repeatDelay: 2.4,
+          delay: HIT + 0.12,
+        }}
       />
     </motion.svg>
   );
 }
 
-/** Logo mark: a small speech bubble holding a signal, ending in the pink dot. */
+/** Logo mark: a small speech bubble holding a signal, with the pink dot on its peak. */
 export function BeyondWordsMark({ size = 26 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" className="shrink-0">
-      <path
-        d="M5.5 3.5 H18.5 A3 3 0 0 1 21.5 6.5 V14 A3 3 0 0 1 18.5 17 H11 L6.5 21 L7.5 17 H5.5 A3 3 0 0 1 2.5 14 V6.5 A3 3 0 0 1 5.5 3.5 Z"
-        fill="var(--canvas)"
-        stroke="var(--ink)"
-        strokeWidth="1.4"
-        strokeLinejoin="round"
-      />
-      <path d="M6 10.5 Q7.5 8 9 10.5 T12 10.5" fill="none" stroke="var(--ink)" strokeWidth="1.3" strokeLinecap="round" />
-      <circle cx="16" cy="10.25" r="2.1" fill="var(--signal)" />
+    <svg width={size} height={size} viewBox={MARK.viewBox} aria-hidden="true" className="shrink-0">
+      <path d={MARK.bubble} fill="var(--surface)" stroke="var(--ink)" strokeWidth="1.4" strokeLinejoin="round" />
+      <path d={MARK.trace} fill="none" stroke="var(--ink)" strokeWidth="1.3" strokeLinecap="round" />
+      <circle cx={MARK.peak.x} cy={MARK.peak.y} r="2.1" fill="var(--signal)" />
     </svg>
   );
 }

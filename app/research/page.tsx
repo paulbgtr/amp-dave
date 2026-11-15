@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ButtonLink, Callout, Card, CheckList, PageIntro, Section } from "@/components/ui";
+import { ButtonLink, Callout, Card, CheckList, Dot, FeatureCard, PageIntro, Panel, Section } from "@/components/ui";
 import { CheckIcon, HomeIcon, LockIcon, PeopleIcon } from "@/components/icons";
 import { Stagger, StaggerItem } from "@/components/motion";
 
@@ -27,18 +27,23 @@ export default function ResearchPage() {
         title="The problem"
         lead="People with severe disabilities, often unable to speak, are cared for around the clock."
       >
-        <div className="space-y-4 text-lg leading-relaxed">
+        <div className="type-lead space-y-6">
           <p>
             Carers rely on emotions, gaze and sounds — and the same sound can mean several
             different needs. They guess, and sometimes get it wrong.
           </p>
-          <figure className="rounded-r-md border-l-2 border-signal bg-surface px-6 py-5">
-            <blockquote className="font-serif text-2xl italic leading-snug text-ink sm:text-[1.75rem]">
-              A client throws away a tablet in the middle of a cartoon. Does he want a
-              different one, or is he tired, or hungry?
-            </blockquote>
-            <figcaption className="mt-3 label-mono">— Example from a care worker we interviewed</figcaption>
-          </figure>
+          <Card>
+            <figure>
+              <blockquote className="type-statement text-ink">
+                &ldquo;A client throws away a tablet in the middle of a cartoon. Does he want a
+                different one, or is he tired, or hungry?&rdquo;
+              </blockquote>
+              <figcaption className="label-mono mt-5 flex items-center gap-2.5">
+                <Dot />
+                Example from a care worker we interviewed
+              </figcaption>
+            </figure>
+          </Card>
           <p className="text-ink-muted">
             The people they care for can&apos;t tell us, so they go unheard. Carers carry that
             uncertainty every day.
@@ -51,20 +56,18 @@ export default function ResearchPage() {
         lead="Our focus is people who can't yet use communication aids."
       >
         <div className="grid gap-4 sm:grid-cols-2">
-          <Card>
-            <h3 className="font-display text-lg font-medium">Pictogram cards &amp; observation</h3>
-            <p className="mt-2 text-ink-muted leading-relaxed">Cheap and familiar, but they depend on guessing.</p>
-          </Card>
-          <Card>
-            <h3 className="font-display text-lg font-medium">Eye-gaze communication devices</h3>
-            <p className="mt-2 text-ink-muted leading-relaxed">They exist, but only work for people who can already choose pictures.</p>
-          </Card>
+          <FeatureCard title={<>Pictogram cards &amp; observation</>}>
+            Cheap and familiar, but they depend on guessing.
+          </FeatureCard>
+          <FeatureCard title="Eye-gaze communication devices">
+            They exist, but only work for people who can already choose pictures.
+          </FeatureCard>
         </div>
       </Section>
 
       <Section title="Our idea" lead="A research partnership between the lab, carers and guardians.">
         <div className="space-y-6">
-          <p className="text-lg leading-relaxed">
+          <p className="type-lead">
             During everyday moments, the lab would record gaze and body signals and look for
             patterns that match what a person wants or feels — so carers can guess less and
             understand more.
@@ -106,11 +109,9 @@ export default function ResearchPage() {
         <Stagger as="ol" className="grid gap-4 sm:grid-cols-2" delay={0.15}>
           {steps.map((s, i) => (
             <StaggerItem as="li" key={s.title}>
-              <Card className="h-full">
-                <p className="font-mono text-sm text-ink-muted">0{i + 1}</p>
-                <h3 className="mt-1 font-display text-lg font-medium">{s.title}</h3>
-                <p className="mt-2 text-ink-muted leading-relaxed">{s.text}</p>
-              </Card>
+              <FeatureCard step={i + 1} title={s.title}>
+                {s.text}
+              </FeatureCard>
             </StaggerItem>
           ))}
         </Stagger>
@@ -118,21 +119,21 @@ export default function ResearchPage() {
 
       <Section title="An honest note">
         <div className="space-y-6">
-          <p className="text-lg leading-relaxed">
+          <p className="type-lead">
             We don&apos;t know yet whether these signals can reliably show what a person
             wants. That is exactly what a careful, small pilot would help find out.
           </p>
-          <div className="rounded-md bg-panel px-6 py-8 sm:px-8">
-            <h3 className="font-serif text-3xl italic leading-tight sm:text-4xl">Care for someone who can&apos;t speak?</h3>
-            <p className="mt-2 max-w-xl leading-relaxed">
+          <Panel>
+            <h3 className="type-statement">Care for someone who can&apos;t speak?</h3>
+            <p className="mt-3 max-w-xl leading-relaxed">
               Whether you&apos;re a parent, carer, therapist, researcher or organisation, we&apos;d
               love to hear from you.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <ButtonLink href="/contact#interest">Express interest</ButtonLink>
-              <ButtonLink href="/equipment" variant="outline">How the sensors work</ButtonLink>
+              <ButtonLink href="/equipment" variant="secondary">How the sensors work</ButtonLink>
             </div>
-          </div>
+          </Panel>
         </div>
       </Section>
     </>

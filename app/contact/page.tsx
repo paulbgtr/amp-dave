@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Card, CheckList, PageIntro } from "@/components/ui";
+import { Card, CheckList, IconBadge, PageIntro, linkClass } from "@/components/ui";
 import { InterestForm } from "@/components/interest-form";
 import { CheckIcon, LockIcon, MailIcon, PinIcon } from "@/components/icons";
 import { CONTACT } from "@/lib/site";
@@ -18,8 +18,8 @@ export default function ContactPage() {
 
       <div className="mx-auto grid max-w-6xl gap-6 px-4 sm:px-6 md:grid-cols-12">
         <section id="interest" aria-labelledby="interest-title" className="scroll-mt-24 md:col-span-7">
-          <Card className="p-6 sm:p-8">
-            <h2 id="interest-title" className="font-display text-2xl font-medium tracking-tight">
+          <Card className="sm:p-9">
+            <h2 id="interest-title" className="type-title">
               Express interest
             </h2>
             <p className="mt-2 mb-6 text-ink-muted">For carers, families, researchers, students and industry.</p>
@@ -29,14 +29,14 @@ export default function ContactPage() {
 
         <aside className="space-y-6 md:col-span-5">
           <Card>
-            <h2 className="font-display text-xl font-medium">Reach the lab</h2>
-            <ul className="mt-4 space-y-4">
+            <h2 className="type-title">Reach the lab</h2>
+            <ul className="mt-5 space-y-4">
               {(CONTACT.email || CONTACT.phone) && (
-                <li className="flex gap-3">
-                  <MailIcon className="mt-0.5 shrink-0 text-ink" />
+                <li className="flex items-center gap-4">
+                  <IconBadge size="sm"><MailIcon /></IconBadge>
                   <span>
                     {CONTACT.email && (
-                      <a href={`mailto:${CONTACT.email}`} className="block font-medium text-ink underline underline-offset-4">
+                      <a href={`mailto:${CONTACT.email}`} className={`block ${linkClass}`}>
                         {CONTACT.email}
                       </a>
                     )}
@@ -48,9 +48,9 @@ export default function ContactPage() {
                   </span>
                 </li>
               )}
-              <li className="flex gap-3">
-                <PinIcon className="mt-0.5 shrink-0 text-ink" />
-                <address className="not-italic">
+              <li className="flex items-start gap-4">
+                <IconBadge size="sm"><PinIcon /></IconBadge>
+                <address className="not-italic leading-relaxed">
                   {CONTACT.address.map((line) => (
                     <span key={line} className="block">{line}</span>
                   ))}

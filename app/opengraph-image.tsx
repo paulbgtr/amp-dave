@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { HERO } from "@/lib/artwork";
 
 // Share card shown when the site is posted on Facebook, Messenger, Slack, etc.
 export const alt =
@@ -11,6 +12,7 @@ export const contentType = "image/png";
 const C = {
   canvas: "#f2ede4",
   surface: "#faf7f1",
+  panel: "#e8e0d2",
   ink: "#342b60", // TalTech purple
   muted: "#625950",
   line: "#dcd3c4",
@@ -20,8 +22,8 @@ const C = {
 // Same fonts as the site. Read at module level so the image is pre-rendered at build time.
 const font = (pkg: string, file: string) => readFile(join(process.cwd(), "node_modules/@fontsource", pkg, "files", file));
 const [sans400, sans500, mono400] = await Promise.all([
-  font("instrument-sans", "instrument-sans-latin-400-normal.woff"),
-  font("instrument-sans", "instrument-sans-latin-500-normal.woff"),
+  font("dm-sans", "dm-sans-latin-400-normal.woff"),
+  font("dm-sans", "dm-sans-latin-500-normal.woff"),
   font("dm-mono", "dm-mono-latin-400-normal.woff"),
 ]);
 
@@ -37,7 +39,7 @@ export default function OpengraphImage() {
           justifyContent: "space-between",
           background: C.canvas,
           color: C.ink,
-          fontFamily: "Instrument Sans",
+          fontFamily: "DM Sans",
           padding: "64px 72px",
         }}
       >
@@ -57,23 +59,13 @@ export default function OpengraphImage() {
             </div>
           </div>
 
-          <svg width="380" height="320" viewBox="40 70 320 270">
-            <path
-              d="M94 100 H306 A24 24 0 0 1 330 124 V246 A24 24 0 0 1 306 270 H170 L118 318 L128 270 H94 A24 24 0 0 1 70 246 V124 A24 24 0 0 1 94 100 Z"
-              fill={C.surface}
-              stroke={C.ink}
-              strokeWidth="2.25"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M106 186 C116 186 120 177 128 177 S140 195 148 195 S160 181 168 181 S180 191 188 191 S204 186 212 186 C224 186 228 146 240 146 S256 204 266 204 S284 186 294 186"
-              fill="none"
-              stroke={C.ink}
-              strokeWidth="2.25"
-              strokeLinecap="round"
-            />
-            <circle cx="240" cy="146" r="16" fill="none" stroke={C.signal} strokeWidth="1.5" opacity="0.5" />
-            <circle cx="240" cy="146" r="8" fill={C.signal} />
+          <svg width="380" height="320" viewBox={HERO.viewBox}>
+            <path d={HERO.bubble} fill={C.panel} transform={`translate(${HERO.plateOffset} ${HERO.plateOffset})`} />
+            <path d={HERO.bubble} fill={C.surface} stroke={C.ink} strokeWidth="2.25" strokeLinejoin="round" />
+            <path d={HERO.ticks} fill="none" stroke={C.ink} strokeWidth="1.25" strokeLinecap="round" opacity="0.35" />
+            <path d={HERO.trace} fill="none" stroke={C.ink} strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx={HERO.peak.x} cy={HERO.peak.y} r="16" fill={C.signal} opacity="0.16" />
+            <circle cx={HERO.peak.x} cy={HERO.peak.y} r="8" fill={C.signal} />
           </svg>
         </div>
 
@@ -95,8 +87,8 @@ export default function OpengraphImage() {
     {
       ...size,
       fonts: [
-        { name: "Instrument Sans", data: sans400, weight: 400, style: "normal" },
-        { name: "Instrument Sans", data: sans500, weight: 500, style: "normal" },
+        { name: "DM Sans", data: sans400, weight: 400, style: "normal" },
+        { name: "DM Sans", data: sans500, weight: 500, style: "normal" },
         { name: "DM Mono", data: mono400, weight: 400, style: "normal" },
       ],
     },

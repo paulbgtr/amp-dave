@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { ButtonLink, Callout, Card, Dot, PageIntro, Section } from "@/components/ui";
+import { ButtonLink, Callout, Dot, DotList, IconCard, PageIntro, Section, Well, chipClass } from "@/components/ui";
 import { BrainIcon, EyeIcon, HandIcon, RobotIcon, PulseIcon } from "@/components/icons";
 import { EegDrawing, EyeTrackerDrawing, SkinResponseDrawing } from "@/components/device-drawings";
 
@@ -69,9 +69,9 @@ export default function EquipmentPage() {
             <li key={d.id}>
               <a
                 href={`#${d.id}`}
-                className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 text-[15px] font-medium hover:bg-panel"
+                className={chipClass}
               >
-                <span className="text-ink">{d.icon}</span>
+                {d.icon}
                 {d.name}
               </a>
             </li>
@@ -81,10 +81,11 @@ export default function EquipmentPage() {
 
       {devices.map((d) => (
         <Section key={d.id} id={d.id} title={d.name} lead={d.measures}>
-          <article className="grid overflow-hidden rounded-md border border-line bg-surface md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-            <div className="border-b border-line md:border-r md:border-b-0">{d.drawing}</div>
+          {/* One card; the drawing and the comfort note sit in wells inside it. */}
+          <article className="soft-card grid gap-2 p-2 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
+            <Well className="overflow-hidden">{d.drawing}</Well>
 
-            <dl className="flex flex-col gap-6 p-6 sm:p-7">
+            <dl className="flex flex-col gap-6 p-4 sm:p-6">
               <div>
                 <dt className="label-mono">How it works</dt>
                 <dd className="mt-2 leading-relaxed">{d.how}</dd>
@@ -92,14 +93,7 @@ export default function EquipmentPage() {
               <div>
                 <dt className="label-mono">What it can tell us</dt>
                 <dd className="mt-2">
-                  <ul className="space-y-1.5">
-                    {d.tells.map((t) => (
-                      <li key={t} className="flex items-baseline gap-3">
-                        <span aria-hidden="true" className="h-px w-3 shrink-0 translate-y-[-0.25em] bg-ink" />
-                        {t}
-                      </li>
-                    ))}
-                  </ul>
+                  <DotList items={d.tells} />
                 </dd>
               </div>
               {d.results && (
@@ -110,36 +104,32 @@ export default function EquipmentPage() {
               )}
             </dl>
 
-            <p className="flex items-start gap-3 border-t border-line bg-panel/50 px-6 py-3.5 text-[15px] md:col-span-2">
-              <Dot tone="go" className="mt-[0.45em]" />
-              <span>
-                <span className="font-medium">Comfort: </span>
+            <Well className="flex items-start gap-3 px-5 py-3.5 text-[15px] md:col-span-2">
+              <Dot tone="go" className="mt-[0.5em]" />
+              <p>
+                <span className="font-medium text-ink">Comfort: </span>
                 {d.comfort}
-              </span>
-            </p>
+              </p>
+            </Well>
           </article>
         </Section>
       ))}
 
       <Section title="Also in the lab" lead="The lab's core work is human–robot collaboration.">
-        <Card className="flex items-start gap-4">
-          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-panel text-ink">
-            <RobotIcon />
-          </span>
-          <p className="leading-relaxed">
-            Collaborative and social robots are used to study attention, stress and comfort when
-            people and machines share a task or a space.
-          </p>
-        </Card>
-        <Card className="mt-4 flex items-start gap-4">
-          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-panel text-ink">
-            <PulseIcon />
-          </span>
-          <p className="leading-relaxed">
-            The lab also records facial expressions, muscle activity (EMG) and heart activity (ECG).
-            All signals are recorded and synchronised in iMotions software.
-          </p>
-        </Card>
+        <div className="space-y-4">
+          <IconCard icon={<RobotIcon />}>
+            <p>
+              Collaborative and social robots are used to study attention, stress and comfort when
+              people and machines share a task or a space.
+            </p>
+          </IconCard>
+          <IconCard icon={<PulseIcon />}>
+            <p>
+              The lab also records facial expressions, muscle activity (EMG) and heart activity (ECG).
+              All signals are recorded and synchronised in iMotions software.
+            </p>
+          </IconCard>
+        </div>
       </Section>
 
       <Section title="Good to know">

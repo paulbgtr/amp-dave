@@ -3,29 +3,31 @@
 import { useEffect, useRef, useState, type SubmitEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { CONTACT, FORMSPREE_ENDPOINT } from "@/lib/site";
-import { EASE } from "@/components/motion";
-import { Dot, Eyebrow } from "@/components/ui";
+import { EASE, EASE_EXIT } from "@/components/motion";
+import { Dot, Eyebrow, buttonClass, chipClass, linkClass } from "@/components/ui";
 
 const ROLES = ["Parent or guardian", "Carer or therapist", "Researcher", "Engineer or industry", "Student or teacher", "Organisation", "Other"];
 const INTERESTS = ["Taking part in a pilot", "Collaborating on the research", "Just keep me updated"];
 const SOURCES = ["Facebook", "Friend or colleague", "TalTech", "Other"];
 
-const field =
-  "mt-1.5 block w-full rounded-md border border-line bg-surface px-3.5 py-2.5 text-ink placeholder:text-ink-muted/70 focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/15";
+// Fields are wells: sunk into the card rather than outlined on top of it.
+const field = "mt-2 block w-full soft-well px-4 py-3 text-text placeholder:text-ink-muted/70";
+const label = "text-[15px] font-medium text-ink";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
 function Choices({ name, legend, options }: { name: string; legend: string; options: string[] }) {
   return (
     <fieldset>
-      <legend className="font-medium">{legend}</legend>
-      <div className="mt-2 flex flex-wrap gap-2">
+      <legend className={label}>{legend}</legend>
+      <div className="mt-2.5 flex flex-wrap gap-2">
         {options.map((o) => (
           <label
             key={o}
-            className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 has-checked:border-ink has-checked:bg-panel has-focus-visible:ring-2 has-focus-visible:ring-signal"
+            className={`${chipClass} cursor-pointer has-checked:bg-ink has-checked:text-canvas has-checked:shadow-button has-focus-visible:outline-2 has-focus-visible:outline-offset-3 has-focus-visible:outline-signal`}
           >
-            <input type="radio" name={name} value={o} required className="accent-ink" />
+            {/* The chip itself shows the choice, so the native radio is kept only for the keyboard and screen readers. */}
+            <input type="radio" name={name} value={o} required className="sr-only" />
             {o}
           </label>
         ))}
@@ -76,7 +78,7 @@ export function InterestForm() {
           className="py-6"
         >
           <Eyebrow tone="go">Received</Eyebrow>
-          <h3 ref={thanksRef} tabIndex={-1} className="mt-4 font-serif text-3xl italic leading-tight outline-none">
+          <h3 ref={thanksRef} tabIndex={-1} className="type-statement mt-4 outline-none">
             Thank you{name ? `, ${name}` : ""}.
           </h3>
           <p className="mt-3 max-w-md leading-relaxed text-ink-muted">
@@ -86,7 +88,7 @@ export function InterestForm() {
           <button
             type="button"
             onClick={() => setStatus("idle")}
-            className="mt-6 text-[15px] font-medium underline underline-offset-4 hover:text-graphite"
+            className={`mt-6 text-[15px] ${linkClass}`}
           >
             Send another response
           </button>
@@ -96,16 +98,16 @@ export function InterestForm() {
           key="form"
           onSubmit={onSubmit}
           exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2, ease: EASE_EXIT }}
           className="space-y-6"
         >
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
-              <label htmlFor="name" className="font-medium">Your name</label>
+              <label htmlFor="name" className={label}>Your name</label>
               <input id="name" name="name" required autoComplete="name" className={field} />
             </div>
             <div>
-              <label htmlFor="email" className="font-medium">Email</label>
+              <label htmlFor="email" className={label}>Email</label>
               <input id="email" name="email" type="email" required autoComplete="email" className={field} />
             </div>
           </div>
@@ -113,7 +115,7 @@ export function InterestForm() {
           <Choices name="role" legend="I am a…" options={ROLES} />
 
           <div>
-            <label htmlFor="org" className="font-medium">
+            <label htmlFor="org" className={label}>
               Organisation <span className="font-normal text-ink-muted">(optional)</span>
             </label>
             <input id="org" name="organisation" autoComplete="organization" className={field} />
@@ -123,7 +125,7 @@ export function InterestForm() {
           <Choices name="source" legend="How did you hear about us?" options={SOURCES} />
 
           <div>
-            <label htmlFor="feedback" className="font-medium">
+            <label htmlFor="feedback" className={label}>
               Does the idea make sense to you? Any concerns?{" "}
               <span className="font-normal text-ink-muted">(optional)</span>
             </label>
@@ -140,7 +142,7 @@ export function InterestForm() {
           <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
           <label className="flex cursor-pointer items-start gap-3 leading-relaxed">
-            <input type="checkbox" name="consent" value="yes" required className="mt-1.5 h-4 w-4 shrink-0 accent-ink" />
+            <input type="checkbox" name="consent" value="yes" required className="mt-1 h-5 w-5 shrink-0 rounded-md accent-ink" />
             <span>You may contact me by email about this research. I can ask you to delete my details at any time.</span>
           </label>
 
@@ -148,7 +150,7 @@ export function InterestForm() {
             <button
               type="submit"
               disabled={status === "sending"}
-              className="inline-flex min-h-11 items-center justify-center gap-2.5 rounded-full bg-ink px-6 py-2.5 font-medium text-canvas transition-colors hover:bg-graphite disabled:cursor-wait disabled:opacity-70"
+              className={`${buttonClass()} disabled:cursor-wait disabled:opacity-70`}
             >
               {status === "sending" && (
                 <motion.span
@@ -165,19 +167,24 @@ export function InterestForm() {
 
           <div aria-live="polite">
             {status === "error" && (
-              <p className="flex items-start gap-3 rounded-md border border-line bg-surface px-4 py-3 text-[15px]">
-                <Dot tone="signal" className="mt-[0.45em]" />
+              <motion.p
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: EASE }}
+                className="soft-well flex items-start gap-3 px-5 py-3.5 text-[15px]"
+              >
+                <Dot tone="signal" className="mt-[0.5em]" />
                 <span>
                   Something went wrong and your note wasn&apos;t sent. Please try again in a moment
                   {CONTACT.email ? (
                     <>
                       , or write to{" "}
-                      <a href={`mailto:${CONTACT.email}`} className="underline underline-offset-4">{CONTACT.email}</a>
+                      <a href={`mailto:${CONTACT.email}`} className={linkClass}>{CONTACT.email}</a>
                     </>
                   ) : null}
                   .
                 </span>
-              </p>
+              </motion.p>
             )}
           </div>
         </motion.form>

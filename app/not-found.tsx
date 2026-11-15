@@ -6,7 +6,7 @@ export default function NotFound() {
       <p>The link may be old or mistyped.</p>
       <div className="mt-8 flex flex-wrap gap-3">
         <ButtonLink href="/">Go to the home page</ButtonLink>
-        <ButtonLink href="/contact" variant="outline">Contact us</ButtonLink>
+        <ButtonLink href="/contact" variant="secondary">Contact us</ButtonLink>
       </div>
     </PageIntro>
   );
