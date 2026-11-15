@@ -24,6 +24,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      // The CSS sets scroll-behavior: smooth. This makes Next jump straight to the top on
+      // page changes (instead of gliding up from where the last page ended) and keeps
+      // smooth scrolling for in-page anchors.
+      data-scroll-behavior="smooth"
       className={`${sans.variable} ${mono.variable} h-full antialiased`}
     >
       <head>
