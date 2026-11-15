@@ -1,5 +1,5 @@
 /**
- * Records a silent, captioned walkthrough of the site as an MP4.
+ * Records a silent walkthrough of the site as an MP4.
  *
  *   bun run demo                 build, serve, record  ->  demo/hri-lab-demo.mp4
  *   bun run demo -- --skip-build reuse the existing .next build
@@ -48,7 +48,7 @@ async function startServer(): Promise<ChildProcess> {
 }
 
 // ---------------------------------------------------------------- on-page overlay
-// Cursor, click ripple, caption pill and title card. Appended to <html>, outside
+// Cursor, click ripple and title card. Appended to <html>, outside
 // <body>, so React never touches them. Re-injected on every full page load.
 
 const OVERLAY_JS = `
@@ -64,9 +64,6 @@ const OVERLAY_JS = `
         #demo-cursor.down { transform: scale(.86); }
         .demo-ripple { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; border: 3px solid #e4067e; animation: demo-ripple .6s ease-out forwards; }
         @keyframes demo-ripple { to { transform: scale(4.2); opacity: 0; } }
-        #demo-caption { position: absolute; left: 50%; bottom: 44px; transform: translate(-50%, 12px); opacity: 0; transition: opacity .45s ease, transform .45s ease;
-          background: #342b60; color: #fff; font-size: 30px; font-weight: 500; letter-spacing: -.01em; padding: 14px 30px; border-radius: 999px; white-space: nowrap; box-shadow: 0 10px 30px rgba(52,43,96,.35); }
-        #demo-caption.on { opacity: 1; transform: translate(-50%, 0); }
         #demo-card { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: #342b60; color: #fff; opacity: 0; transition: opacity .7s ease; }
         #demo-card.on { opacity: 1; }
         #demo-card.instant { transition: none; }
@@ -75,7 +72,6 @@ const OVERLAY_JS = `
         #demo-card i { width: 14px; height: 14px; border-radius: 50%; background: #e4067e; }
       </style>
       <div id="demo-card"><i></i><h1></h1><p></p></div>
-      <div id="demo-caption"></div>
       <svg id="demo-cursor" viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z" fill="#fff" stroke="#342b60" stroke-width="1.6" stroke-linejoin="round"/></svg>\`;
     document.documentElement.appendChild(root);
     const cur = root.querySelector("#demo-cursor");
@@ -118,15 +114,6 @@ class Director {
   constructor(readonly page: Page) {}
 
   pause = (ms: number) => sleep(ms);
-
-  async caption(text: string | null) {
-    await this.page.evaluate((t) => {
-      const el = document.getElementById("demo-caption")!;
-      if (t === null) return el.classList.remove("on");
-      el.textContent = t; // swapping text while visible reads as a quick cross-cut
-      el.classList.add("on");
-    }, text);
-  }
 
   async card(title: string | null, sub = "", instant = false) {
     await this.page.evaluate(
@@ -179,44 +166,57 @@ class Director {
     const dx = to.x - from.x;
     const dy = to.y - from.y;
     const dist = Math.hypot(dx, dy) || 1;
-    const dur = ms ?? clamp(200 + dist * 0.3, 240, 600);
+    const dur = ms ?? clamp(220 + dist * 0.35, 260, 700);
 
-    if (overshoot && dist > 450) {
-      const over = between(8, 18);
+    // Long reaches sometimes land a few pixels past the target, settle, then correct.
+    if (overshoot && dist > 450 && rnd() < 0.6) {
+      const over = between(6, 14);
       await this.glide({ x: to.x + (dx / dist) * over, y: to.y + (dy / dist) * over }, dur * 0.9);
-      await this.glide(to, 110);
+      await sleep(between(40, 90));
+      await this.glide(to, between(130, 180));
       return;
     }
 
+    // The hand accelerates, peaks a little before halfway, then slows into the target
+    // (a minimum-jerk curve on slightly skewed time). No per-frame jitter: at 60 fps it reads as a tremor.
     const steps = Math.max(10, Math.round(dur / 16));
-    const bow = dist * between(0.03, 0.07) * (rnd() > 0.5 ? 1 : -1);
+    const bow = dist * between(0.02, 0.06) * (rnd() > 0.5 ? 1 : -1);
     for (let i = 1; i <= steps; i++) {
-      const t = 1 - Math.pow(1 - i / steps, 2.6);
+      const u = Math.pow(i / steps, 0.8);
+      const t = u * u * u * (10 - 15 * u + 6 * u * u);
       const arc = Math.sin(Math.PI * t) * bow;
-      const shake = i < steps ? between(-0.7, 0.7) : 0;
-      await this.page.mouse.move(
-        from.x + dx * t - (dy / dist) * arc + shake,
-        from.y + dy * t + (dx / dist) * arc + shake,
-      );
+      await this.page.mouse.move(from.x + dx * t - (dy / dist) * arc, from.y + dy * t + (dx / dist) * arc);
       await sleep(dur / steps);
     }
     this.cur = to;
   }
 
-  /** Spend `ms` looking at the page: the cursor wanders a little instead of freezing. */
+  /**
+   * Spend `ms` looking at the page. A reading hand mostly rests; now and then it nudges the
+   * mouse a few pixels, and occasionally it follows the eyes somewhere else on the screen.
+   */
   async idle(ms: number) {
     const end = Date.now() + ms;
-    while (Date.now() < end - 150) {
-      const next = {
-        x: clamp(this.cur.x + between(-90, 90), 120, VIEW.width - 120),
-        y: clamp(this.cur.y + between(-50, 50), 160, VIEW.height - 160),
-      };
-      await this.glide(next, between(300, 480));
-      await sleep(Math.min(between(60, 200), Math.max(0, end - Date.now())));
+    const left = () => end - Date.now();
+    while (left() > 0) {
+      await sleep(Math.min(left(), between(350, 900)));
+      if (left() < 450) continue; // no time for another move: rest until the end
+      const reach = rnd() < 0.25 ? between(70, 150) : between(8, 36);
+      const angle = between(0, Math.PI * 2);
+      await this.glide(
+        {
+          x: clamp(this.cur.x + Math.cos(angle) * reach, 120, VIEW.width - 120),
+          y: clamp(this.cur.y + Math.sin(angle) * reach * 0.6, 160, VIEW.height - 160),
+        },
+        between(260, 460),
+      );
     }
   }
 
-  /** Scroll down in uneven flicks while the cursor drifts, pausing briefly to take things in. */
+  /**
+   * Scroll down in uneven flicks, pausing briefly to take things in. While the wheel is turning
+   * the mouse barely moves; the cursor only relocates during the pauses (see idle).
+   */
   async tour({ stops = 4, pauseMs = 550 } = {}) {
     for (let i = 0; i < stops; i++) {
       const { y, max } = await this.page.evaluate(() => ({
@@ -228,11 +228,15 @@ class Director {
       await Promise.all([
         this.scrollTo(y + VIEW.height * between(0.62, 0.95), dur),
         this.glide(
-          { x: clamp(this.cur.x + between(-160, 160), 160, VIEW.width - 160), y: between(280, 640) },
+          {
+            x: clamp(this.cur.x + between(-30, 30), 160, VIEW.width - 160),
+            y: clamp(this.cur.y + between(-45, 45), 240, VIEW.height - 220),
+          },
           dur,
         ),
       ]);
-      await this.idle(pauseMs * between(0.7, 1.3));
+      // Uneven attention: most stops are a glance, the odd one gets a proper look.
+      await this.idle(pauseMs * (rnd() < 0.3 ? between(1.4, 1.8) : between(0.7, 1.1)));
     }
   }
 
@@ -261,21 +265,29 @@ class Director {
 
   async click(target: Locator, at: "centre" | "left" = "centre") {
     await this.moveTo(target, at);
-    await sleep(between(60, 140));
+    await sleep(between(90, 200)); // the cursor settles on the target before the press
     await this.page.mouse.down();
-    await sleep(between(50, 90));
+    await sleep(between(60, 110));
     await this.page.mouse.up();
     await sleep(between(110, 190));
   }
 
-  /** Click into a field and type with uneven rhythm: fast runs, small hesitations. */
+  /**
+   * Click into a field and type like a quick touch typist: words come out in runs, with a beat
+   * at word boundaries, a slower reach for capitals and symbols, and the odd hesitation.
+   */
   async type(target: Locator, text: string) {
     await this.click(target, "left");
+    await sleep(between(120, 220)); // hand goes from the mouse to the keyboard
     for (const ch of text) {
       await this.page.keyboard.type(ch);
-      await sleep(between(18, 55) + (" ,.—".includes(ch) && rnd() > 0.6 ? between(60, 130) : 0));
+      let gap = between(38, 85);
+      if (" ,.".includes(ch)) gap += between(30, 110);
+      else if (/[^a-z]/.test(ch)) gap += between(25, 70); // shift, digits, @, ä
+      if (rnd() < 0.04) gap += between(160, 300);
+      await sleep(gap);
     }
-    await sleep(between(120, 220));
+    await sleep(between(140, 260));
   }
 
   /** Click a link and wait for the client-side route change to land. */
@@ -288,16 +300,15 @@ class Director {
 }
 
 // ---------------------------------------------------------------- flows
-// Each flow = one caption + the actions that happen under it. Reorder or delete freely.
-// Captions swap directly from one flow to the next, so there is never dead air between them.
+// Each flow = one named section of the walkthrough. Reorder or delete freely.
 
-type Flow = { caption: string; run: (d: Director) => Promise<void> };
+type Flow = { name: string; run: (d: Director) => Promise<void> };
 
 const nav = (d: Director, href: string) => d.page.locator(`nav[aria-label="Main"] a[href="${href}"]`);
 
 const FLOWS: Flow[] = [
   {
-    caption: "Meet the HRI Lab",
+    name: "Meet the HRI Lab",
     async run(d) {
       await d.pause(900); // hero animates in
       await d.glide({ x: 1150, y: 360 }); // sweep over the speech-bubble artwork
@@ -307,14 +318,14 @@ const FLOWS: Flow[] = [
     },
   },
   {
-    caption: "Helping carers understand people who can’t speak",
+    name: "Helping carers understand people who can’t speak",
     async run(d) {
       await d.go(d.page.getByRole("link", { name: "Read the idea" }), "/research");
       await d.tour({ stops: 4, pauseMs: 500 });
     },
   },
   {
-    caption: "Sensors that read gaze, brain and body signals",
+    name: "Sensors that read gaze, brain and body signals",
     async run(d) {
       await d.go(d.page.getByRole("link", { name: "How the sensors work" }).first(), "/equipment");
       await d.idle(300);
@@ -328,14 +339,14 @@ const FLOWS: Flow[] = [
     },
   },
   {
-    caption: "How the lab works with industry",
+    name: "How the lab works with industry",
     async run(d) {
       await d.go(nav(d, "/lab"), "/lab");
       await d.tour({ stops: 3, pauseMs: 450 });
     },
   },
   {
-    caption: "Anyone can get involved — consent first",
+    name: "Anyone can get involved — consent first",
     async run(d) {
       await d.go(d.page.getByRole("link", { name: "Get in touch" }).first(), "/contact");
 
@@ -397,10 +408,8 @@ async function main() {
     await d.pause(300);
 
     for (const flow of FLOWS) {
-      await d.caption(flow.caption); // swaps straight from the previous caption, no gap
       await flow.run(d);
     }
-    await d.caption(null);
 
     await d.card("HRI Lab", "Team AMP Dave · TalTech Virumaa College");
     await d.pause(2200);
